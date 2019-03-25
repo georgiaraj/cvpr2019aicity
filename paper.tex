@@ -67,7 +67,7 @@ In this paper we propose a new mutual learning based network architecture, that 
 
 \section{Multi-modal Vehicle Re-identification}
 
-In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I_1} = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation and landmark position labels $\mathcal{O}=\{o_i\}_{i=1}^N$ $\mathcal{L}=\{\mathbf{l_i}\}_{i=1}^N$ respectively, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations), and  $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $L$ keypoints, for the vehicle within image $\mathbf{I}_i$.
+In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I_1} = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation and landmark position labels $\mathcal{O}=\{o_i\}_{i=1}^N$ $\mathcal{L}=\{\mathbf{l_i}\}_{i=1}^N$ respectively, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations), and  $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
 In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data.
 
@@ -76,12 +76,10 @@ In order to perform accurate re-ID, we use this data to build a model constructe
 \begin{figure*}
   \includegraphics[width=\linewidth,trim=0cm 10cm 0cm 0cm,clip=true]{images/system_overview.pdf}
   \label{F:overview}
-  \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch (E) Vehicle landmark localisation branch. Feedforward signals shown in black. Hard target (groundtruth) loss propogation shown in \textcolor{red}{red}. Soft target consensus feedback loss propogation shown in \textcolor{green}{green}.}
+  \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch (E) Vehicle landmark localisation branch. (F) Consensus learning through feature fusion. Feedforward signals shown in black. Hard target (groundtruth) loss propogation shown in \textcolor{red}{red}. Soft target consensus feedback loss propogation shown in \textcolor{green}{green}.}
 \end{figure*}
 
-An overview of our proposed model can be seen in Figure \ref{F:overview}. The model is composed of a number of sub-branches, each of which is simultaneously learning a representation to solve its own set of tasks. In addition, there is a single fusion branch, which allows feature selection to be performed from the entire collection of individual representations.
-
-Each sub-branch will now be described in more detail.
+An overview of our proposed model can be seen in Figure \ref{F:overview}. The model is composed of a number of sub-branches, each of which is simultaneously learning a representation to solve its own set of tasks. In addition, there is a single fusion branch, which allows feature selection to be performed from the entire collection of individual representations. It is the output from this branch that is taken during deployment. Each sub-branch will now be described in more detail.
 
 \paragraph{(A) Vehicle Identity}
 
@@ -108,9 +106,9 @@ In order to force the model to focus on details of the vehicles, that allow for 
 
 This branch is tasked with learning a representation to simultaneously predict the identity class and the orientation class, if known. In the case where the training images do not have associated orientation labels, this branch is trained in exactly the same way as the Vehicle Identity branch outlined above. However, when orientation labels are available, both sets of labels are simultaneously employed in a joint loss function in order to optimise the branch for prediction of both identity and orientation. Again, the cross entropy loss is employed for this task. Hence, the branch calculates both Eq. (\ref{E:softmax_id}), as well as the softmax posterior probability of the orientation label $o_i$ for the image:
 \begin{equation}
-  p_i^{O} = p(\hat{o_i} = o_i|\mathbf{I_i}) = \frac{\exp(\hat{o_i})}{\sum_{l=1}^{N_{O}}\exp(\hat{o_l})}
+  p_i^{O} = p(\hat{o_i} = o_i|\mathbf{I_i}) = \frac{\exp(\hat{o_i})}{\sum_{j=1}^{N_{O}}\exp(\hat{o_j})}
 \end{equation}
-where this time $\hat{o_l} = \mathbf{w_l^Tx_i}$, and $\mathbf{w_l}$ is the prediction function parameter for orientation class $\emph{l}$.
+where this time $\hat{o_j} = \mathbf{w_j^Tx_j}$, and $\mathbf{w_j}$ is the prediction function parameter for orientation class $\emph{j}$.
 
 The loss for this branch across the minibatch of images can then be calculated as:
 \begin{equation}
@@ -119,7 +117,21 @@ The loss for this branch across the minibatch of images can then be calculated a
 
 \paragraph{(E) Vehicle Landmark Localisation}
 
-Vehicle landmarks are distinguishing features that must be employed in order to perform correct  re-identification of vehicles that look very similar. Hence it is crucial that our model picks up on these in its feature representation. In order to attempt to ensure this, we task one branch with simultaneously predicting the position of these landmarks (if present) as well as the identity class. As above, if no landmark labels are available in the minibatch, this branch is trained in exactly the same way as branch A.
+Vehicle landmarks are distinguishing features that must be employed in order to perform correct  re-identification of vehicles that look very similar. Hence it is crucial that our model picks up on these in its feature representation. In order to attempt to ensure this, we task one branch with simultaneously predicting the position of these landmarks (if present) as well as the identity class. As above, if no landmark labels are available in the minibatch, this branch is trained in exactly the same way as branch A. 
+
+If landmark groundtruth labels are available, these are employed to train the branch to predict the location of the landmarks which are present, while at the same time predict identity. As a different set of landmarks are visible, depending on the orientation of the vehicle, we need to take the absence of landmarks altogether into account when training this branch. Thus, we design a loss function that only penalises the predictions for landmarks that are present in the groundtruth labels for the minibatch examples. As this is the regression problem, we also set the final layer of the branch to output with linear activation, and take the Mean Squared Error (MSE) as the basis for our custom loss function. If the landmarks were all present in every training image, we could use the standard MSE loss:
+\begin{equation}
+  l_{LM} = \frac{1}{N_B} \sum_{j=1}^{N_L} \sum_{i=1}^{N_B} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2
+\end{equation}
+Where $\hat{x_{i,j}}$ and $\hat{y_{i,j}}$ are the predicted normalised coordinates. However, we need to alter this to remove landmarks that are not present at all in the image. Hence we design a selective MSE function that only takes into account those landmarks which the groundtruth labels indicate are present in the image. Thus:
+\begin{equation}
+  l_{LM} = \sum_{j=1}^{N_L} \frac{1}{N_{B_j}} \sum_{i \in B_j} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2 
+\end{equation}
+where $B_j$ is the subset of the minibatch examples for which landmark $j$ is present in image $\mathbf{I_i}$. Due to the nature of the landmarks, we expect that there will be a similar number of examples in the batch that contain each landmark, hence we can approximate this as:
+\begin{equation}
+  l_{LM} = \frac{1}{\bar{N_{B_j}}} \sum_{j=1}^{N_L}  \sum_{i \in B_j} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2 
+\end{equation}
+in order to simplify the calculation.
 
 \paragraph{(F) Consensus Learning and Feedback}
 

@@ -90,7 +90,7 @@ The root branch of our model is tasked with learning the best representation for
 \end{equation}
 where $\hat{y_k} = \mathbf{w_k^Tx_i}$, $\mathbf{x_i}$ is the feature vector for image $\mathbf{I_i}$ given by final layer of the branch, and $\mathbf{w_k}$ is the prediction function parameter for identity class $\emph{k}$. The loss across a minibatch of $N_B$ images can then be computed as:
 \begin{equation}
-  l_{ID} = -\frac{1}{N_B} \sum_{i=1}^{N_B} log(p_i^{ID})
+  l_{ID} = -\frac{1}{N_B} \sum_{i=1}^{N_B} \log{p_i^{ID}}
   \label{E:cross_entropy_loss}
 \end{equation}
 
@@ -112,7 +112,7 @@ where this time $\hat{o_j} = \mathbf{w_j^Tx_j}$, and $\mathbf{w_j}$ is the predi
 
 The loss for this branch across the minibatch of images can then be calculated as:
 \begin{equation}
-  l_{O} = -\frac{1}{N_B} \sum_{i=1}^{N_B}( log(p_i^{ID}) + log(p_i^{O}))
+  l_{O} = -\frac{1}{N_B} \sum_{i=1}^{N_B}(\log{p_i^{ID}} + \log{p_i^{O}})
 \end{equation}
 
 \paragraph{(E) Vehicle Landmark Localisation}
@@ -121,17 +121,20 @@ Vehicle landmarks are distinguishing features that must be employed in order to 
 
 If landmark groundtruth labels are available, these are employed to train the branch to predict the location of the landmarks which are present, while at the same time predict identity. As a different set of landmarks are visible, depending on the orientation of the vehicle, we need to take the absence of landmarks altogether into account when training this branch. Thus, we design a loss function that only penalises the predictions for landmarks that are present in the groundtruth labels for the minibatch examples. As this is the regression problem, we also set the final layer of the branch to output with linear activation, and take the Mean Squared Error (MSE) as the basis for our custom loss function. If the landmarks were all present in every training image, we could use the standard MSE loss:
 \begin{equation}
-  l_{LM} = \frac{1}{N_B} \sum_{j=1}^{N_L} \sum_{i=1}^{N_B} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2
+  M = \frac{1}{N_B} \sum_{j=1}^{N_L} \sum_{i=1}^{N_B} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2
 \end{equation}
-Where $\hat{x_{i,j}}$ and $\hat{y_{i,j}}$ are the predicted normalised coordinates. However, we need to alter this to remove landmarks that are not present at all in the image. Hence we design a selective MSE function that only takes into account those landmarks which the groundtruth labels indicate are present in the image. Thus:
+where $\hat{x_{i,j}}$ and $\hat{y_{i,j}}$ are the predicted normalised coordinates. However, we need to alter this to remove landmarks that are not present at all in the image. Hence we design a selective MSE function that only takes into account those landmarks which the groundtruth labels indicate are present in the image. Thus:
 \begin{equation}
-  l_{LM} = \sum_{j=1}^{N_L} \frac{1}{N_{B_j}} \sum_{i \in B_j} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2 
+  M = \sum_{j=1}^{N_L} \frac{1}{N_{B_j}} \sum_{i \in B_j} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2 
 \end{equation}
-where $B_j$ is the subset of the minibatch examples for which landmark $j$ is present in image $\mathbf{I_i}$. Due to the nature of the landmarks, we expect that there will be a similar number of examples in the batch that contain each landmark, hence we can approximate this as:
+where $B_j$ is the subset of the minibatch examples for which landmark $j$ is present in image $\mathbf{I_i}$. Due to the nature of the landmarks, we can assume that there will be a similar number of examples in the batch that contain each landmark, hence we can approximate this as:
 \begin{equation}
-  l_{LM} = \frac{1}{\bar{N_{B_j}}} \sum_{j=1}^{N_L}  \sum_{i \in B_j} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2 
+  M = \frac{1}{\bar{N_{B_j}}} \sum_{j=1}^{N_L}  \sum_{i \in B_j} (\hat{x_{i,j}} - x_{i,j})^2 + (\hat{y_{i,j}} - y_{i,j})^2 
 \end{equation}
-in order to simplify the calculation.
+where $\bar{N_{B_j}}$ is the mean number of examples containing each landmark, in order to simplify the calculation. Then the full loss function for the landmark branch becomes:
+\begin{equation}
+  l_{LM} = M - \frac{1}{N_B} \sum_{i=1}^{N_B} \log{p_i}
+\end{equation}
 
 \paragraph{(F) Consensus Learning and Feedback}
 
@@ -153,6 +156,8 @@ The total consensus loss for a particular branch is then:
 This is added to each individual branches loss functions. In addition, this mechanism provides regularisation of the whole network by propogating all of the consensus losses back through the feature fusion layer, which also boosts the learning of the ensemble.
 
 \subsection{Model Training}
+
+
 
 \subsection{Vehicle Re-ID deployment}
 

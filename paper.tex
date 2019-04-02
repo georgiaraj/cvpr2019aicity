@@ -7,6 +7,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 % Include other packages here, before hyperref.
 
@@ -67,7 +69,7 @@ In this paper we propose a new mutual learning based network architecture, that 
 
 \section{Multi-modal Vehicle Re-identification}
 
-In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation and landmark position labels $\mathcal{O}=\{o_i\}_{i=1}^N$ and $\mathcal{L}=\{\mathbf{l_i}\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations), and  $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
+In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation and landmark position labels $\mathcal{O}=\{o_i\}_{i=1}^N$ and $\mathcal{L}=\{\mathbf{l_i}\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations), and  $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
 In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data.
 
@@ -76,7 +78,7 @@ In order to perform accurate re-ID, we use this data to build a model constructe
 \begin{figure*}
   \includegraphics[width=\linewidth,trim=0cm 10cm 0cm 0cm,clip=true]{images/system_overview.pdf}
   \label{F:overview}
-  \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch (E) Vehicle landmark localisation branch. (F) Consensus learning through feature fusion. Feedforward signals shown in black. Hard target (groundtruth) loss propogation shown in \textcolor{red}{red}. Soft target consensus feedback loss propogation shown in \textcolor{green}{green}.}
+  \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch (E) Vehicle landmark localisation branch. (F) Consensus learning through feature fusion. Feedforward signals shown in black. Hard target (groundtruth) loss propagation shown in \textcolor{red}{red}. Soft target consensus feedback loss propagation shown in \textcolor{green}{green}.}
 \end{figure*}
 
 An overview of our proposed model can be seen in Figure \ref{F:overview}. The model is composed of a number of sub-branches, each of which is simultaneously learning a representation to solve its own set of tasks. In addition, there is a single fusion branch, which allows feature selection to be performed from the entire collection of individual representations. It is the output from this branch that is taken during deployment. Each sub-branch will now be described in more detail.
@@ -143,7 +145,7 @@ In order to harness the benefit of all branches for the purpose of vehicle re-id
   p_i^C = p(\hat{y_i^C} = y_i|\mathbf{I_i}) = \frac{\exp(\hat{y_i^C})}{\sum_{k=1}^{N_{id}}\exp(\hat{y_k^C})}
 \end{equation}
 
-Additionally, we also utilise a consensus propogation mechanism, similar to the previously proposed method \cite{chen2017person,kanaci2018vehicle}. Here the consensus output is taken as 'soft targets' (as opposed to the groundtruth label 'hard targets') for the training data, and used to feedback information about the predictions made by the entire ensemble of branches. This is done concurrently with the training of the individual branches. Thie method is inspired by the idea of Knowledge Distillation (KD) \cite{hinton2015distilling}, but is different in that here we employ the combined predictions from all the 'student' branches as a \emph{virtual} teacher model, rather than utilising a pre-trainined powerful teacher model to provide the soft targets.
+Additionally, we also utilise a consensus propagation mechanism, similar to the previously proposed method \cite{chen2017person,kanaci2018vehicle}. Here the consensus output is taken as 'soft targets' (as opposed to the groundtruth label 'hard targets') for the training data, and used to feedback information about the predictions made by the entire ensemble of branches. This is done concurrently with the training of the individual branches. Thie method is inspired by the idea of Knowledge Distillation (KD) \cite{hinton2015distilling}, but is different in that here we employ the combined predictions from all the `student' branches as a \emph{virtual} teacher model, rather than utilising a pre-trainined powerful teacher model to provide the soft targets.
 
 Specifically, the feedback mechanism employs the consensus probability predictions $P^C_i = \left[p_{i,1}^C,...,p_{i,j}^C,...,p_{i,N_{ID}}^C\right]$ given image $\mathbf{I_i}$, feeding these into the cross entropy loss between the two distributions to provide a consensus regularisation loss for the branch:
 \begin{equation}
@@ -153,13 +155,45 @@ The total consensus loss for a particular branch is then:
 \begin{equation}
   l_{C} = \frac{1}{N_B} \sum_{i=1}^{N_B} \mathcal{H}_i
 \end{equation}
-This is added to each individual branches loss functions. In addition, this mechanism provides regularisation of the whole network by propogating all of the consensus losses back through the feature fusion layer, which also boosts the learning of the ensemble.
+This is added to each individual branch's loss functions. In addition, this mechanism provides regularisation of the whole network by propagating all of the consensus losses back through the feature fusion layer, which also boosts the learning of the ensemble.
 
 \subsection{Model Training}
 
+As we have two training sets, each of which contain different groundtruth labels, we adopt an alternate training schedule to optimise our model. We first train on our larger training set, which contains 
 
+\begin{algorithm}[t]
+  \caption{The model training algorithm}
+  \label{A:model_training}
+  \begin{algorithmic}
+    \REQUIRE{Training sets $\mathcal{I}_1$ $\mathcal{I}_2$, labels $\mathcal{Y}_1$\
+      $\mathcal{O}$ $\mathcal{L}$ $\mathcal{Y}_2$, model $\mathcal{M}$}
+    \STATE{$\bullet$ Initialise network branches with pre-trained ImageNet weights}
+    \STATE{$\bullet$ Initialise output layers of $\mathcal{M}$ randomly}
+
+    \FOR{epoch $e \in (1, E)$}
+
+      \FOR{each training set $\mathcal{I} \in (\mathcal{I}_1,\mathcal{I}_2)$}
+        \STATE{$\bullet$ Feed-forward through model to obtain all branch identity classification \
+        predictions on images in $\mathcal{I}$}
+
+        \IF{$\mathcal{I}$ has associated $\mathcal{O}$ and $\mathcal{L}$}
+          \STATE{$\bullet$ Feed-forward to obtain orientation classification and landmark regression \
+        predictions}
+        \ENDIF
+
+        \STATE{$\bullet$ Fuse features and perform consensus identity classification predictions}
+        \STATE{$\bullet$ Calculate hard and soft losses for each branch and backpropagate to update weights}
+        \STATE{$\bullet$ Calculate hard and soft losses for the consensus branch and backpropagate}
+
+      \ENDFOR
+    \ENDFOR
+          
+  \end{algorithmic}
+\end{algorithm}
 
 \subsection{Vehicle Re-ID deployment}
+
+During deployment, we employ the feature fusion layer from our trained model as the full feature representation in order to perform vehicle re-identification matching. As we do not necessarily have camera information about the query or gallery images, or timestamp information, which would allow the use of camera distance or time-based analysis, we use only a generic distance metric - the $L1$ metric - in order to match gallery images to the query. Hence, for each of the query image $\mathbf{I}^q$, and the gallery images $\{\mathbf{I}_i^g\}$,  we compute our $6400$ dimension fused feature representations, $\mathbf{x}^q$ and $\{\mathbf{x}_i^g\}$ respectively. We then calculate the $L1$ distance between the query representation and each of the gallery images, and rank the latter by increasing distance in order to calculate the Rank-1 and mAP performance scores.
 
 \section{Experiments}
 

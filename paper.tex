@@ -28,7 +28,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Multi-modal task transfer learning for Vehicle Re-Identification}
+\title{Multi-task Mutual Learning for Vehicle Re-Identification}
 
 \author{First Author\\
 Institution1\\
@@ -63,15 +63,15 @@ of the same model type and colour, and a significant visual appearance variation
 of the same vehicle instance in different camera views \cite{}.
 
 
-Due to the fact that vehicles are rigid objects, unlike people, the orientation of the vehicle can alter very predictably the appearance of in a particular viewpoint. Hence
+Due to the fact that vehicles are rigid objects, unlike people, the orientation of the vehicle can alter very predictably the appearance of in a particular viewpoint. \emph{TODO motivation and related work}
 
-In this paper we propose a new mutual learning based network architecture, that aims to simulataneously learn a number of tasks, an
+In this paper we propose a new mutual learning based network architecture, that aims to simulataneously learn a number of tasks and then use consensus learning to build an improved representation for the purpose of vehicle re-identification.
 
 \section{Multi-modal Vehicle Re-identification}
 
 In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation and landmark position labels $\mathcal{O}=\{o_i\}_{i=1}^N$ and $\mathcal{L}=\{\mathbf{l_i}\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations), and  $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
-In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data.
+In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data. \emph{TODO expand}
 
 \subsection{Model Structure and Feature Learning}
 
@@ -159,7 +159,7 @@ This is added to each individual branch's loss functions. In addition, this mech
 
 \subsection{Model Training}
 
-As we have two training sets, each of which contain different groundtruth labels, we adopt an alternate training schedule to optimise our model. We first train on our larger training set, which contains 
+As we have two training sets, each of which contain different groundtruth labels, we adopt an alternate training schedule to optimise our model. \emph{TODO}
 
 \begin{algorithm}[t]
   \caption{The model training algorithm}
@@ -187,7 +187,7 @@ As we have two training sets, each of which contain different groundtruth labels
 
       \ENDFOR
     \ENDFOR
-          
+
   \end{algorithmic}
 \end{algorithm}
 

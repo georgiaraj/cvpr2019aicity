@@ -10,6 +10,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{multirow}
+\usepackage{arydshln}
 
 \def\x{{\mathsf x}}
 
@@ -33,20 +34,26 @@
 %%%%%%%%% TITLE
 \title{Multi-Task Mutual Learning for Vehicle Re-Identification}
 
-\author{First Author\\
-Institution1\\
-Institution1 address\\
-{\tt\small firstauthor@i1.org}
+\author{Georgia Rajamanoharan\\
+Vision Semantics Ltd\\
+{\tt\small georgia@visionsemantics.com}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
 % just like the second author.
 % To save space, use either the email address or home page, not both
 \and
-Second Author\\
-Institution2\\
-First line of institution2 address\\
-{\tt\small secondauthor@i2.org}
+Aytac Kanaci \hspace{0.7cm}
+%Queen Mary University of London\\
+%{\tt\small secondauthor@i2.org}
+%\and
+Minxian Li  \hspace{0.7cm}
+%Queen Mary University of London\\
+%{\tt\small secondauthor@i2.org}
+%\and
+Shaogang Gong\\
+Queen Mary University of London\\
+{\tt\small \{a.kanaci,m.li,s.gong\}@qmul.ac.uk }
 }
 
 \maketitle
@@ -68,7 +75,7 @@ of the same vehicle instance in different camera views \cite{}.
 
 Due to the fact that vehicles are rigid objects, unlike people, the orientation of the vehicle can alter very predictably the appearance of in a particular viewpoint. \emph{TODO motivation and related work}
 
-In this paper we propose a new mutual learning based network architecture, that aims to simulataneously learn a number of tasks and then use consensus learning to build an improved representation for the purpose of vehicle re-identification.
+In this paper we propose a new mutual learning based network architecture, that aims to simulataneously learn a number of tasks, plus a consensus, to build an improved representation for the purpose of vehicle re-identification.
 
 \section{Multi-modal Vehicle Re-identification}
 
@@ -157,7 +164,7 @@ q_i^O =
 
 \paragraph{(E) Consensus Learning and Feedback}
 
-In order to harness the benefit of all branches for the purpose of vehicle re-identification, we employ consensus learning as proposed in \cite{chen2017person} and previously harnessed for vehicle re-id in \cite{kanaci2018vehicle}. This is done via feature fusion of the final convolutional feature maps from all branches for consensus learning. As our branches are based on the MobileNet architecture, these feature maps are formed via an average pooling operation which result in feature vectors of length $1280$. Hence our fused features are of length $6400$. This is then passed to one additional identity softmax classification layer, again employed with cross entropy loss. Hence:
+In order to harness the benefit of all branches for the purpose of vehicle re-identification, we employ consensus learning as proposed in \cite{chen2017person} and previously harnessed for vehicle re-id in \cite{kanaci2018vehicle}. This is done via feature fusion of the final convolutional feature maps from all branches for consensus learning. As our branches are based on the ResNet50 architecture, these feature maps are formed via an average pooling operation which result in feature vectors of length $2048$. Hence our fused features are of length $8192$. We then add one additional fully connected layer, of size $1024$, and the output of this passed to a final identity softmax classification layer, again employed with cross entropy loss. Hence:
 \begin{equation}
   p_i^C = p(\hat{y_i^C} = y_i|\mathbf{I_i}) = \frac{\exp(\hat{y_i^C})}{\sum_{k=1}^{N_{id}}\exp(\hat{y_k^C})}
 \end{equation}
@@ -211,7 +218,7 @@ During deployment, we employ the feature fusion layer from our trained model as 
 
 \section{Experiments}
 
-We conduct a number of experiments to explore the performance of our method. First we exploit a number of widely available vehicle ID benchmark datasets in order to assess the benefit of each of the branches of our model independently, and altogether. Then we compare the performance of our model to other current work by looking at our performance in the NVIDIA AI City Challenge 2019 Task 2 (Vehicle Re-identification). As our method includes a branch that predicts vehicle orientation in addition to identity, our model requires data that contains the orientation labels for training. As a result, we include the VeRI776 dataset \cite{} in the training set for all our experiments.
+We conduct a number of experiments to explore the performance of our method. First we exploit a number of widely available vehicle ID benchmark datasets in order to assess the benefit of each of the branches of our model independently, and altogether. Then we compare the performance of our model to other current work by looking at our performance in the NVIDIA AI City Challenge 2019 Task 2 (Vehicle Re-identification). As our method includes a branch that predicts vehicle orientation in addition to identity, our model requires data that contains the orientation labels for training. As a result, we include the VeRI776 dataset \cite{liu2016veri} in the training set for all our experiments.
 
 \subsection{Implementation Details}
 
@@ -243,17 +250,21 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     \hline
     Method & mAP & Rank-1 & Rank-5 \\
     \hline
-    DPFL \cite{kanaci2018vehicle} & \\
+    MSVF \cite{kanaci2018vehicle} & 49.3 & 88.6 & - \\
+    OIFE \cite{wang2017orientation} & 51.4 & 68.3 & 89.7 \\
+    S-CNN+P-LSTM \cite{Shen_2017_ICCV} & 58.3 & 83.5 & 90.0 \\
+    MTCRO (no ReRank) \cite{xu2018framework} & 61.6 & 87.2 & 94.2 \\
+    MTCRO (ReRank) \cite{xu2018framework} & 62.6 & 88.0 & 94.6 \\
     \hline
     MTML-S & \\
     MTML-O & \\
     MTML-G & \\
-    \hline
+    \hdashline
     MTML-SG & \\
     MTML-OG & \\
     MTML-OSG & \\
-    \hline
-    MTML-OSG+ReRank & \\
+    \hdashline
+    MTML-OSG (ReRank) & \\
     \hline
   \end{tabular}
   \caption{Trained/tested on VeRi776 only}
@@ -268,16 +279,14 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     \cline{2-7}
     & mAP & Rank-1 & mAP & Rank-1 & mAP & Rank-1 \\
     \hline
-    DPFL \cite{kanaci2018vehicle} & \\
-    \hline
     MTML-S & \\
     MTML-O & \\
     MTML-G & \\
-    \hline
+    \hdashline
     MTML-SG & \\
     MTML-OG & \\
     MTML-OSG & \\
-    \hline
+    \hdashline
     MTML-OSG+ReRank & \\
     \hline
   \end{tabular}

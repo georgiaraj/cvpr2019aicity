@@ -11,6 +11,8 @@
 \usepackage{algorithmic}
 \usepackage{multirow}
 
+\def\x{{\mathsf x}}
+
 % Include other packages here, before hyperref.
 
 % If you comment hyperref and then uncomment it, you should delete
@@ -29,7 +31,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Multi-task Mutual Learning for Vehicle Re-Identification}
+\title{Multi-Task Mutual Learning for Vehicle Re-Identification}
 
 \author{First Author\\
 Institution1\\
@@ -70,7 +72,8 @@ In this paper we propose a new mutual learning based network architecture, that 
 
 \section{Multi-modal Vehicle Re-identification}
 
-In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation and landmark position labels $\mathcal{O}=\{o_i\}_{i=1}^N$ and $\mathcal{L}=\{\mathbf{l_i}\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations), and  $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
+In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation labels, $\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations).
+%and landmark position labels $\mathcal{L_1}=\{\mathbf{l_i}\}_{i=1}^N$ $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
 In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data. \emph{TODO expand}
 
@@ -173,34 +176,27 @@ This is added to each individual branch's loss functions. In addition, this mech
 
 \subsection{Model Training}
 
-As we have two training sets, each of which contain different groundtruth labels.
+In order to train our model, we combine both training sets, $\mathcal{I}_1$ and $\mathcal{I}_2$, and employ batches that contain both images with and without orientation labelling.
 
 \begin{algorithm}[t]
   \caption{The model training algorithm}
   \label{A:model_training}
   \begin{algorithmic}
-    \REQUIRE{Training sets $\mathcal{I}_1$ $\mathcal{I}_2$, labels $\mathcal{Y}_1$\
-      $\mathcal{O}$ $\mathcal{L}$ $\mathcal{Y}_2$, model $\mathcal{M}$}
+    \REQUIRE{Training sets $\mathcal{I}_1$ $\mathcal{I}_2$, labels $\mathcal{Y}_1$ $\mathcal{Y}_2$\
+      $\mathcal{O}_1$, model $\mathcal{M}$}
     \STATE{$\bullet$ Initialise network branches with pre-trained ImageNet weights}
     \STATE{$\bullet$ Initialise output layers of $\mathcal{M}$ randomly}
 
     \FOR{epoch $e \in (1, E)$}
 
-      \FOR{each training set $\mathcal{I} \in (\mathcal{I}_1,\mathcal{I}_2)$}
         \STATE{$\bullet$ Feed-forward through model to obtain all branch identity classification \
-        predictions on images in $\mathcal{I}$}
-
-        \IF{$\mathcal{I}$ has associated $\mathcal{O}$ and $\mathcal{L}$}
-          \STATE{$\bullet$ Feed-forward to obtain orientation classification and landmark regression \
-        predictions}
-        \ENDIF
-
-        \STATE{$\bullet$ Fuse features and perform consensus identity classification predictions}
-        \STATE{$\bullet$ Calculate hard and soft losses for each branch and backpropagate to update weights}
-        \STATE{$\bullet$ Calculate hard and soft losses for the consensus branch and backpropagate}
-
-      \ENDFOR
-    \ENDFOR
+          predictions on images in $\mathcal{I}_1$ and $\mathcal{I}_2$}
+        \STATE{$\bullet$ Feed-forward to obtain orientation classification predictions on $\mathcal{I}_1$}
+        \STATE{$\bullet$ Fuse features and perform consensus identity classification predictions on both training sets}
+        \STATE{$\bullet$ Calculate hard and soft losses identity losses for each branch and backpropagate to update weights}
+        \STATE{$\bullet$ Calculate orientation losses using labels for $\mathcal{I}_1$ and backpropagate to update weights on the orientation branch}
+        \STATE{$\bullet$ Calculate hard and soft identity losses for the consensus branch and backpropagate}
+     \ENDFOR
 
   \end{algorithmic}
 \end{algorithm}
@@ -222,19 +218,30 @@ We conduct a number of experiments to explore the performance of our method. Fir
 We employ the ResNet50 \cite{} network architecture as the base of our model.
 
 Details:
-- Learning rate of ...
-- Batch size 16?
+- Learning rate of 0.0001
+- Batch size 8
 - Number of epochs.
+- Adam optimiser with exponential decay rates set as follows: $\beta_1=0.9$ and $\beta_2=0.999$.
+- The two scales used: standard $224\x224$ and small (for multiscale) $160\x160$.
 
-\subsection{Vehicle Benchmark Datasets}
+We measure the performance of our vehicle re-identification methods according to the standard Cumulative Matching Characteristic (CMC) and mean Average Precision (mAP). The CMC is computed on each individual rank $k$ as the cumulative percentage of correct matches appearing
+at ranks $\leq k$. The mAP is calculated as the mean over all query images of the Average Precision, which itself is calculated as the precision cut-off at each correct recalled image position averaged over all possible correct gallery images \cite{}.
 
+\subsection{Vehicle Re-identification Datasets}
+
+\paragraph{VeRi776}
+
+\paragraph{VehicleID}
+
+\paragraph{BoxCars21k}
+
+\paragraph{CompCars}
 
 \begin{table}
-  \begin{tabular}{l || c | c || c | c }
+  \centering
+  \begin{tabular}{l || c | c | c }
     \hline
-    \multirow{2}{*}{Method} & \multicolumn{2}{c ||}{VeRi776} & \multicolumn{2}{c}{VeRi776+VehicleID} \\
-    \cline{2-5}
-    & mAP & Rank-1 & mAP & Rank-1 \\
+    Method & mAP & Rank-1 & Rank-5 \\
     \hline
     DPFL \cite{kanaci2018vehicle} & \\
     \hline
@@ -246,17 +253,44 @@ Details:
     MTML-OG & \\
     MTML-OSG & \\
     \hline
-
+    MTML-OSG+ReRank & \\
+    \hline
   \end{tabular}
-  \caption{}
-  \label{T:benchmark_results}
+  \caption{Trained/tested on VeRi776 only}
+  \label{T:benchmark_results_veri}
 \end{table}
+
+\begin{table*}
+  \centering
+  \begin{tabular}{l || c | c || c | c || c | c }
+    \hline
+    \multirow{2}{*}{Method} & \multicolumn{2}{c}{Small} & \multicolumn{2}{c}{Medium} &\multicolumn{2}{c}{Large} \\
+    \cline{2-7}
+    & mAP & Rank-1 & mAP & Rank-1 & mAP & Rank-1 \\
+    \hline
+    DPFL \cite{kanaci2018vehicle} & \\
+    \hline
+    MTML-S & \\
+    MTML-O & \\
+    MTML-G & \\
+    \hline
+    MTML-SG & \\
+    MTML-OG & \\
+    MTML-OSG & \\
+    \hline
+    MTML-OSG+ReRank & \\
+    \hline
+  \end{tabular}
+  \caption{Trained on VeRi776+VehicleID, tested on VehicleID}
+  \label{T:benchmark_results_vehicleid}
+\end{table*}
 
 \subsection{NVIDIA AI City Challenge 2019}
 
 We participated in Task 2 of the NVIDIA AI City Challenge 2019. The aim of this task was attempt city-scale multi-camera vehicle re-identification. Multiple cameras were placed at multiple intersections and no camera information was provided about the images.
 
 \begin{table}
+  \centering
   \begin{tabular}{l || c | c}
 
   \end{tabular}

@@ -183,11 +183,9 @@ This is added to each individual branch's loss functions. In addition, this mech
 
 \subsection{Model Training}
 
-In order to train our model, we combine both training sets, $\mathcal{I}_1$ and $\mathcal{I}_2$, and employ batches that contain both images with and without orientation labelling.
+In order to train our model, we combine both training sets, $\mathcal{I}_1$ and $\mathcal{I}_2$, and employ batches that contain both images with and without orientation labelling. The full training algorithm can be seen in Algorithm \ref{A:model_training}.
 
 \begin{algorithm}[t]
-  \caption{The model training algorithm}
-  \label{A:model_training}
   \begin{algorithmic}
     \REQUIRE{Training sets $\mathcal{I}_1$ $\mathcal{I}_2$, labels $\mathcal{Y}_1$ $\mathcal{Y}_2$\
       $\mathcal{O}_1$, model $\mathcal{M}$}
@@ -206,6 +204,8 @@ In order to train our model, we combine both training sets, $\mathcal{I}_1$ and 
      \ENDFOR
 
   \end{algorithmic}
+  \caption{The MTML training algorithm.}
+  \label{A:model_training}
 \end{algorithm}
 
 \subsection{Vehicle Re-ID deployment}
@@ -253,8 +253,7 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     MSVF \cite{kanaci2018vehicle} & 49.3 & 88.6 & - \\
     OIFE \cite{wang2017orientation} & 51.4 & 68.3 & 89.7 \\
     S-CNN+P-LSTM \cite{Shen_2017_ICCV} & 58.3 & 83.5 & 90.0 \\
-    MTCRO (no ReRank) \cite{xu2018framework} & 61.6 & 87.2 & 94.2 \\
-    MTCRO (ReRank) \cite{xu2018framework} & 62.6 & 88.0 & 94.6 \\
+    MTCRO \cite{xu2018framework} & 61.6 & 87.2 & 94.2 \\
     \hline
     MTML-S & \\
     MTML-O & \\
@@ -262,9 +261,10 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     \hdashline
     MTML-SG & \\
     MTML-OG & \\
-    MTML-OSG & \\
-    \hdashline
-    MTML-OSG (ReRank) & \\
+    MTML-OSG & \bf{61.8} & \bf{90.3} & \bf{95.4} \\
+    \hline
+    MTCRO (ReRank) \cite{xu2018framework} & 62.6 & 88.0 & \bf{94.6} \\
+    MTML-OSG (ReRank) & \bf{65.8} & \bf{91.9} & 94.0 \\
     \hline
   \end{tabular}
   \caption{Trained/tested on VeRi776 only}

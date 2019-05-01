@@ -266,21 +266,24 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
 
 We employ a number of previously released Vehicle Re-ID datasets in our experiments, in order to train and test our method extensively. Firstly we conduct experiments on two benchmark datasets: VeRi776 and VehicleID. Firstly we train and test only the VeRi776 dataset, for comparison with previous state-of-the-art methods. And secondly we train on both the VeRi776 and VehicleID datasets, and then test on the VehicleID, for all three testsets: small, medium and large. We conduct the latter experiment in this was due to the fact that our method requires some training data with orientation labels. As VeRi776 is the only dataset with labels of this kind, we must therefore include it in the training.
 
-\begin{table}
-  \begin{tabular}{c | c | c | c}
-    TODO
+\begin{table*}
+  \centering
+  \begin{tabular}{c || c | c | c || c | c || c | c}
+    \hline
+    \multirow{2}{*}{Dataset} & \multicolumn{3}{c||}{Training} & \multicolumn{2}{c||}{Probe} & \multicolumn{2}{c}{Gallery} \\
+    \cline{2-7}
+    & \#IDs& \#Imgs & \#Orients & \#IDs & \#Imgs & \#IDs & \#Imgs \\
+    \hline
+    VeRi-776 \cite{} & 576 & 30188 & 8 & 200 & 1678 & 200 & 11579 \\
+    VehicleID \cite{} & 13164 & 100182 & - & 2400 & 17638 & 2400 & 2400 \\
+    BoxCars \cite{} & 21250 & 63750 & -  & - & - & - & - \\
+    CompCars \cite{} & 1118 & 31148 & - & - & - & - & - \\
+    AICity2019 \cite{} & \\
+    \hline
   \end{tabular}
   \caption{Details of the datasets employed for train and test.}
   \label{T:dataset_details}
-\end{table}
-
-\paragraph{VeRi776}
-
-\paragraph{VehicleID}
-
-\paragraph{BoxCars21k}
-
-\paragraph{CompCars}
+\end{table*}
 
 Table \ref{T:benchmark_results_veri} shows the results of the first experiment, where we train and test only on the VeRi776 dataset. As can be seen, our model achieves state-of-the-art mAP and Rank-1 scores on this dataset, of ... and ... respectively.
 

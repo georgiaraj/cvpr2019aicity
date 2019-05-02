@@ -10,8 +10,13 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{multirow}
+<<<<<<< HEAD
 % \usepackage{arydshln}
 % \usepackage{todonotes}
+=======
+\usepackage{arydshln}
+\usepackage{subcaption}
+>>>>>>> e5e018ecb6db264c0f87b6bfce9aaf7c51b0ff67
 
 \def\x{{\mathsf x}}
 
@@ -176,8 +181,34 @@ improved representation for the purpose of vehicle re-identification.
 
 \section{Related Work}
 
+\begin{figure*}
+  \begin{subfigure}{.6\textwidth}
+    \includegraphics[width=\linewidth,trim=5cm 11cm 5cm 11cm,clip=true]{images/veri_orients.pdf}
+  \end{subfigure}
+  \begin{subfigure}{.4\textwidth}
+    \centering
+    \begin{tabular}{c | c | c}
+      \hline
+      Index & Orientation & Colour \\
+      \hline
+      0 & front & \textcolor{red}{red} \\
+      1 & rear & \textcolor{blue}{blue}  \\
+      2 & left  & - \\
+      3 & left front & \textcolor{cyan}{cyan}  \\
+      4 & left rear & \textcolor{yellow}{yellow}  \\
+      5 & right  & - \\
+      6 & right front & \textcolor{green}{green} \\
+      7 & right rear & \textcolor{black}{black} \\
+      \hline
+    \end{tabular}
+  \end{subfigure}
+  \caption{Examples from the VeRi776 dataset with the orientation labels provided in \cite{wang2017orientation} (best viewed in colour).}
+  \label{T:veri_veh_orientations}
+\end{figure*}
+
 \section{Multi-modal Vehicle Re-identification}
 
+<<<<<<< HEAD
 In order to perform Re-ID of previously unseen query vehicles, the aim of our
 model is to learn an feature embedding that allows for accurate retrivals based
 on distance (\eg L1) from the query image representation. In order to perform
@@ -201,15 +232,23 @@ is the orientation (for $N_O$ possible orientations).
 In order to perform accurate re-ID, we use this data to build a model
 constructed from a number of branches, each of which is tasked with learning a
 specific aspect of the data. \emph{TODO expand}
+=======
+In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn a feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels as well as vehicle orientation class labels.
+%and landmark position labels for a number of specific keypoints
+We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation labels, $\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations).
+%and landmark position labels $\mathcal{L_1}=\{\mathbf{l_i}\}_{i=1}^N$ $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
+
+In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data concurrently. The branches of the model are as follows: A) Identity classification B) Identity classification from a scaled image C) Identity from grayscale image D) Identity plus the vehicles' orienations. The individual branches then form a consensus prediction on the identity of the training examples, and this consensus is then employed for regulation of the individual branches.
+>>>>>>> e5e018ecb6db264c0f87b6bfce9aaf7c51b0ff67
 
 \subsection{Model Structure and Feature Learning}
 
 \begin{figure*}
   \includegraphics[width=\linewidth,trim=0cm 8cm 0cm 0cm,clip=true]{images/system_overview_orient_only.pdf}
-  \label{F:overview}
   \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch
     %(E) Vehicle landmark localisation branch.
 (E) Consensus learning through feature fusion. Feedforward signals shown in black. Hard target (groundtruth) loss propagation shown in \textcolor{red}{red}. Soft target consensus feedback loss propagation shown in \textcolor{green}{green}.}
+  \label{F:overview}
 \end{figure*}
 
 An overview of our proposed model can be seen in Figure \ref{F:overview}. The model is composed of a number of sub-branches, each of which is simultaneously learning a representation to solve its own set of tasks. In addition, there is a single fusion branch, which allows feature selection to be performed from the entire collection of individual representations. It is the output from this branch that is taken during deployment. Each sub-branch will now be described in more detail.
@@ -354,13 +393,30 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
 
 \subsection{Vehicle Re-identification Datasets}
 
-\paragraph{VeRi776}
+We employ a number of previously released Vehicle Re-ID datasets in our experiments, in order to train and test our method extensively. Firstly we conduct experiments on two benchmark datasets: VeRi776 and VehicleID. Firstly we train and test only the VeRi776 dataset, for comparison with previous state-of-the-art methods. And secondly we train on both the VeRi776 and VehicleID datasets, and then test on the VehicleID, for all three testsets: small, medium and large. We conduct the latter experiment in this was due to the fact that our method requires some training data with orientation labels. As VeRi776 is the only dataset with labels of this kind, we must therefore include it in the training.
 
-\paragraph{VehicleID}
+\begin{table*}
+  \centering
+  \begin{tabular}{c || c | c | c || c | c || c | c}
+    \hline
+    \multirow{2}{*}{Dataset} & \multicolumn{3}{c||}{Training} & \multicolumn{2}{c||}{Probe} & \multicolumn{2}{c}{Gallery} \\
+    \cline{2-7}
+    & \#IDs& \#Imgs & \#Orients & \#IDs & \#Imgs & \#IDs & \#Imgs \\
+    \hline
+    VeRi-776 \cite{} & 576 & 30188 & 8 & 200 & 1678 & 200 & 11579 \\
+    VehicleID \cite{} & 13164 & 100182 & - & 2400 & 17638 & 2400 & 2400 \\
+    BoxCars \cite{} & 21250 & 63750 & -  & - & - & - & - \\
+    CompCars \cite{} & 1118 & 31148 & - & - & - & - & - \\
+    AICity2019 \cite{} & \\
+    \hline
+  \end{tabular}
+  \caption{Details of the datasets employed for train and test.}
+  \label{T:dataset_details}
+\end{table*}
 
-\paragraph{BoxCars21k}
+Table \ref{T:benchmark_results_veri} shows the results of the first experiment, where we train and test only on the VeRi776 dataset. As can be seen, our model achieves state-of-the-art mAP and Rank-1 scores on this dataset, of ... and ... respectively.
 
-\paragraph{CompCars}
+After 100 epochs
 
 \begin{table}
   \centering
@@ -373,11 +429,16 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     S-CNN+P-LSTM \cite{Shen_2017_ICCV} & 58.3 & 83.5 & 90.0 \\
     MTCRO \cite{xu2018framework} & 61.6 & 87.2 & 94.2 \\
     \hline
-    MTML-S & \\
+    MTML-S & 59.4 & 89.7 & 95.1 \\
     MTML-O & \\
     MTML-G & \\
+<<<<<<< HEAD
     % \hdashline
     MTML-SG & \\
+=======
+    \hdashline
+    MTML-SG & 63.4 & 91.1 & 95.4 \\
+>>>>>>> e5e018ecb6db264c0f87b6bfce9aaf7c51b0ff67
     MTML-OG & \\
     MTML-OSG & \bf{61.8} & \bf{90.3} & \bf{95.4} \\
     \hline

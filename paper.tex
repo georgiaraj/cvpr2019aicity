@@ -10,7 +10,8 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{multirow}
-\usepackage{arydshln}
+% \usepackage{arydshln}
+% \usepackage{todonotes}
 
 \def\x{{\mathsf x}}
 
@@ -29,6 +30,18 @@
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 %\ifcvprfinal\pagestyle{empty}\fi
 \setcounter{page}{4321}
+
+
+%% helper definitions
+\def\eg{\emph{e.g.\hspace{0.3em}}}
+\def\Eg{\emph{E.g.\hspace{0.3em}}}
+\def\ie{\emph{i.e.\hspace{0.3em}}}
+\def\etal{\emph{et al.\hspace{0.3em}}}
+
+% TODO
+\newcommand{\todo}[1]{}
+\renewcommand{\todo}[1]{{\color{red} TODO: {#1}}}
+
 \begin{document}
 
 %%%%%%%%% TITLE
@@ -67,22 +80,127 @@ Queen Mary University of London\\
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-Vehicle re-identification (re-id) aims at searching vehicle instances across nonoverlapping camera views by image matching. Influenced by the recent extensive studies on person re-id \cite{gong2014re}, vehicle re-id has started to gain increasing attention in the past two years, and a number of vehicle databases and additional labelling are now available to facilitate this research \cite{liu2016vehicleid,liu2016veri,yang2015large,kanaci2018vehicle,wang2017orientation}. This area promises the potential for more flexible means for vehicle recognition and search than Automatic Number Plate Recognition (ANPR). However, vehicle re-id by visual appearance is a
+%%% Background and motivation
+As the ubiquitousness of surveillance cameras capturing vehicle in transport in
+cities and highways increase, the need for analyzing this visual data has
+become an interest in computer vision. With the advent of autonomous driving
+and smart city applications the need for accurately analyzing vehicles in these
+scenarios with related computer vision tasks \ie detection, classification and
+pose estimation as well as re-identification is ever-increasing.
+
+Vehicle re-identification (re-ID) aims at searching a target vehicle
+(identity) across non-overlapping camera views by image matching.  
+Vehicle re-identification received less attention than person re-identification
+which is been studied extensively \cite{gong2014re, Li2018Harmonious,
+chen2017person}.\todo{add more citation}  
+
+As a unique ID of a vehicle, license plate has been widely used for vehicle
+re-ID. However, license plate recognition is quite sensitive to image quality,
+camera view and occlusion. Furthermore, license plate may be removed,
+altered even faked in some cases, making it unreliable to identify a vehicle
+simply by its license plate. Therefore, vehicle re-ID by visual appearance is
+of great practical value in real-world applications such as smart cities.
+
+A related problem to vehicle re-identification is fine-grained vehicle model 
+classification such as ``Audi A4 2014''\cite{yang2015compcars}.  
+However, the granularity of vehicle re-identification task is much finer
+since the ideal target is to search a specific vehicle rather than a model, in
+which the image instances of the same vehicle (identity) forms a separate
+class.
+%%% Vehicle re-id challenges 
+However,
+vehicle re-id by visual appearance is a
 challenging task due to the very similar appearance of different vehicle instances
-of the same model type and colour, and a significant visual appearance variation
-of the same vehicle instance in different camera views \cite{}.
+of the same model type and color, and a significant visual appearance variation
+of the same vehicle instance in different camera views. In other words
+large intra-instance differences of the same vehicle in different cameras,
+and subtle inter-instance differences between different vehicles in the same
+view, considering thousands of vehicles in a large scale smart city setting is
+the main challenge of vehicle re-ID. Moreover, unlike person re-id 
+orientation of vehicles results in self occlusion and drastic visual geometry
+changes where in person re-id visual geometry or texture of the person's
+appearance (wear) will not change.
+% re-ID problem. A human body is usually upright, thus the texture or color of
+% his/her wear will not change severely in different views. Deploying the
+% person re-ID methods for vehicles directly cannot obtain satisfactory
+% performance.
+% Due to the fact that vehicles are rigid objects, unlike people, the orientation
+% of the vehicle can alter very predictably the appearance of in a particular
+% viewpoint. 
 
 
-Due to the fact that vehicles are rigid objects, unlike people, the orientation of the vehicle can alter very predictably the appearance of in a particular viewpoint. \emph{TODO motivation and related work}
+% This area promises the potential for more flexible means for vehicle
+% recognition and search than Automatic Number Plate Recognition (ANPR). 
 
-In this paper we propose a new mutual learning based network architecture, that aims to simulataneously learn a number of tasks, plus a consensus, to build an improved representation for the purpose of vehicle re-identification.
+% be found as an instance-level object search problem.
+
+
+%%% matching probe gallery
+Formally re-ID  aims to find
+target images of the same identity in a large gallery set given a probe image. 
+In order to match appearances of objects, firstly we need to obtain an
+embedding for the objects. A
+match is then performed by using a suitable distance metric expressing the
+closeness of two objects in an embedding space. A good embedding should be
+invariant to illumination, scale and viewpoint changes. 
+
+%%% we use CNNs
+Recently, Convolutional Neural Network (CNN) has achieved state-of-the-art
+performance in various computer vision 
+recognition tasks, such as large-scale image classification 
+face recognition  and person re-ID.
+With the supervision of a carefully designed objective loss, typically
+cross-entropy and/or triplet loss
+% contrastive loss or triplet loss
+CNN can learn efficient feature embedding
+
+%%% Datasets and SOTA
+Influenced by the recent advancements on person re-id vehicle re-id has started
+to gain increasing attention, 
+and a number of vehicle databases and additional labeling are now available to
+facilitate this research
+ including 
+ VeRi-776\cite{Liu2016icme-veri, Liu2016eccv_veri}  ,
+ VehicleID\cite{liu2016vehicleid} and VRIC\cite{kanaci2018vehicle} and methods
+ specific to vehicle re-ID becoming more frequent in various venues
+ \cite{wang2017orientation, Shen_2017_ICCV, Zhou2018VAMI}.  
+
+%%% Our method:
+In this paper we propose a new mutual learning based network architecture, that
+aims to simultaneously learn a number of tasks, plus a consensus, to build an
+improved representation for the purpose of vehicle re-identification.
+% Second, we propose to leverage multi-task learning to gen- erate discriminative
+% feature representation by the joint op- timization of group sensitive triplet
+% loss and softmax loss, which can be well applied to accomplish large scale
+% vehicle re-identification towards real applications.
+
+\section{Related Work}
 
 \section{Multi-modal Vehicle Re-identification}
 
-In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn an feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels, vehicle orientation class labels, and landmark position labels for a number of specific keypoints. We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation labels, $\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations).
+In order to perform Re-ID of previously unseen query vehicles, the aim of our
+model is to learn an feature embedding that allows for accurate retrivals based
+on distance (\eg L1) from the query image representation. In order to perform
+this task, we utilise training data containing a number of different labels:
+identity class labels, vehicle orientation class labels, and landmark position
+labels for a number of specific keypoints. We assume two sets of training
+examples 
+$\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ 
+and 
+$\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, 
+containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels 
+$\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, 
+where $y_i \in \left[1,...,N_{id}\right]}$ for $N_{id}$ 
+distinct vehicle idenities spanning the two training sets. However, in
+addition, $\mathcal{I}_1$ also contains orientation labels,
+$\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ 
+is the orientation (for $N_O$ possible orientations).
+
 %and landmark position labels $\mathcal{L_1}=\{\mathbf{l_i}\}_{i=1}^N$ $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
-In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data. \emph{TODO expand}
+In order to perform accurate re-ID, we use this data to build a model
+constructed from a number of branches, each of which is tasked with learning a
+specific aspect of the data. \emph{TODO expand}
 
 \subsection{Model Structure and Feature Learning}
 
@@ -258,7 +376,7 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     MTML-S & \\
     MTML-O & \\
     MTML-G & \\
-    \hdashline
+    % \hdashline
     MTML-SG & \\
     MTML-OG & \\
     MTML-OSG & \bf{61.8} & \bf{90.3} & \bf{95.4} \\
@@ -282,11 +400,11 @@ at ranks $\leq k$. The mAP is calculated as the mean over all query images of th
     MTML-S & \\
     MTML-O & \\
     MTML-G & \\
-    \hdashline
+    % \hdashline
     MTML-SG & \\
     MTML-OG & \\
     MTML-OSG & \\
-    \hdashline
+    % \hdashline
     MTML-OSG+ReRank & \\
     \hline
   \end{tabular}

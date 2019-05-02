@@ -10,7 +10,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{multirow}
-% \usepackage{arydshln}
+\usepackage{arydshln}
 \usepackage{subcaption}
 
 \def\x{{\mathsf x}}
@@ -89,10 +89,10 @@ scenarios with related computer vision tasks \ie detection, classification and
 pose estimation as well as re-identification is ever-increasing.
 
 Vehicle re-identification (re-ID) aims at searching a target vehicle
-(identity) across non-overlapping camera views by image matching.  
+(identity) across non-overlapping camera views by image matching.
 Vehicle re-identification received less attention than person re-identification
 which is been studied extensively \cite{gong2014re, Li2018Harmonious,
-chen2017person}.\todo{add more citation}  
+chen2017person}.\todo{add more citation}
 
 As a unique ID of a vehicle, license plate has been widely used for vehicle
 re-ID. However, license plate recognition is quite sensitive to image quality,
@@ -101,13 +101,13 @@ altered even faked in some cases, making it unreliable to identify a vehicle
 simply by its license plate. Therefore, vehicle re-ID by visual appearance is
 of great practical value in real-world applications such as smart cities.
 
-A related problem to vehicle re-identification is fine-grained vehicle model 
-classification such as ``Audi A4 2014''\cite{yang2015compcars}.  
+A related problem to vehicle re-identification is fine-grained vehicle model
+classification such as ``Audi A4 2014''\cite{yang2015compcars}.
 However, the granularity of vehicle re-identification task is much finer
 since the ideal target is to search a specific vehicle rather than a model, in
 which the image instances of the same vehicle (identity) forms a separate
 class.
-%%% Vehicle re-id challenges 
+%%% Vehicle re-id challenges
 However,
 vehicle re-id by visual appearance is a
 challenging task due to the very similar appearance of different vehicle instances
@@ -116,7 +116,7 @@ of the same vehicle instance in different camera views. In other words
 large intra-instance differences of the same vehicle in different cameras,
 and subtle inter-instance differences between different vehicles in the same
 view, considering thousands of vehicles in a large scale smart city setting is
-the main challenge of vehicle re-ID. Moreover, unlike person re-id 
+the main challenge of vehicle re-ID. Moreover, unlike person re-id
 orientation of vehicles results in self occlusion and drastic visual geometry
 changes where in person re-id visual geometry or texture of the person's
 appearance (wear) will not change.
@@ -126,28 +126,28 @@ appearance (wear) will not change.
 % performance.
 % Due to the fact that vehicles are rigid objects, unlike people, the orientation
 % of the vehicle can alter very predictably the appearance of in a particular
-% viewpoint. 
+% viewpoint.
 
 
 % This area promises the potential for more flexible means for vehicle
-% recognition and search than Automatic Number Plate Recognition (ANPR). 
+% recognition and search than Automatic Number Plate Recognition (ANPR).
 
 % be found as an instance-level object search problem.
 
 
 %%% matching probe gallery
 Formally re-ID  aims to find
-target images of the same identity in a large gallery set given a probe image. 
+target images of the same identity in a large gallery set given a probe image.
 In order to match appearances of objects, firstly we need to obtain an
 embedding for the objects. A
 match is then performed by using a suitable distance metric expressing the
 closeness of two objects in an embedding space. A good embedding should be
-invariant to illumination, scale and viewpoint changes. 
+invariant to illumination, scale and viewpoint changes.
 
 %%% we use CNNs
 Recently, Convolutional Neural Network (CNN) has achieved state-of-the-art
-performance in various computer vision 
-recognition tasks, such as large-scale image classification 
+performance in various computer vision
+recognition tasks, such as large-scale image classification
 face recognition  and person re-ID.
 With the supervision of a carefully designed objective loss, typically
 cross-entropy and/or triplet loss
@@ -156,14 +156,14 @@ CNN can learn efficient feature embedding
 
 %%% Datasets and SOTA
 Influenced by the recent advancements on person re-id vehicle re-id has started
-to gain increasing attention, 
+to gain increasing attention,
 and a number of vehicle databases and additional labeling are now available to
 facilitate this research
- including 
+ including
  VeRi-776\cite{Liu2016icme-veri, Liu2016eccv_veri},
  VehicleID\cite{liu2016vehicleid} and VRIC\cite{kanaci2018vehicle} and methods
  specific to vehicle re-ID becoming more frequent in various venues
- \cite{wang2017orientation, Shen_2017_ICCV, Zhou2018VAMI}.  
+ \cite{wang2017orientation, Shen_2017_ICCV, Zhou2018VAMI}.
 
 %%% Our method:
 \todo{Expand near submission}
@@ -182,23 +182,23 @@ One closely related problem to re-identification is vehicle model
 classification
 \cite{liao2015exploiting,gu2013car,lin2014jointly,yang2015compcars,sochor2016boxcars,hu2017deep}.
 But, the two problems are usually studied independently.
-For example, Yang et al. \cite{yang2015compcars} propose a part attributes driven 
-vehicle model recognition. 
+For example, Yang et al. \cite{yang2015compcars} propose a part attributes driven
+vehicle model recognition.
 They also contribute a large comprehensive car dataset named ``CompCars''
-with model class labels but without vehicle identity labels. 
-More recently, Hu et al. \cite{hu2017deep} formulate a deep CNN framework capable of 
+with model class labels but without vehicle identity labels.
+More recently, Hu et al. \cite{hu2017deep} formulate a deep CNN framework capable of
 selecting spatial salient vehicle parts in order to learn more
 discriminative model representations without explicit parts annotations, with
 
 \noindent {\bf Vehicle Re-Identification. }
 Whist vehicle re-id is less studied than person re-id
-\cite{gong2014person,li2014deepreid,ahmed2015improved,xiao2016learning,li2017person,sun2017svdnet,li2018harmonious,zhong2017camera},
+\cite{gong2014person,li2014deepreid,ahmed2015improved,xiao2016learning,li2017person,sun2017svdnet,Li2018Harmonious,zhong2017camera},
 there are a handful of existing methods.
-%Notably, Feris \etal \cite{feris2012large} proposed an attribute-based re-id method. 
+%Notably, Feris \etal \cite{feris2012large} proposed an attribute-based re-id method.
 %The vehicles are firstly classified by different attributes like car model types and colours. The re-id matching is then conducted in the attribute space.
 %%
 %Dominik \etal \cite{zapletal2016vehicle}
-%used 3D bounding boxes for rectifying car images and then concatenate colour histogram features of vehicle image pairs. 
+%used 3D bounding boxes for rectifying car images and then concatenate colour histogram features of vehicle image pairs.
 %A binary linear SVM model is then trained to verify whether a pair of images have the same identity.
 %%
 %Both methods rely heavily on weak hand-crafted visual features in a
@@ -215,7 +215,7 @@ visual similarities between vehicle images.
 %learning capacity.
 %
 Liu \etal \cite{Liu2016cvpr_drdl} also designed a Coupled Clusters Loss (CCL)
-to boost a multi-branch CNN model for vehicle re-id. 
+to boost a multi-branch CNN model for vehicle re-id.
 %
 All these methods utilize the global appearance features of vehicle images and
 ignore local discriminative regions.
@@ -230,19 +230,19 @@ images, and the implicit assumption of having sufficient image
 resolution/details for computing these keypoints.
 %
 
-Additionally, 
+Additionally,
 space-time contextual knowledge has also been exploited for vehicle re-id
 subject to structured scenes \cite{Liu2016eccv_veri,Shen_2017_ICCV}.
 Liu \etal \cite{Liu2016eccv_veri} proposed
 a spatio-temporal affinity approach for quantifying every pair of images.
-%This method is inclined to image pairs that are close to each other 
+%This method is inclined to image pairs that are close to each other
 %in both spatial and temporal domains therefore only a simplified solution.
 %
-Shen \etal \cite{Shen_2017_ICCV} further 
+Shen \etal \cite{Shen_2017_ICCV} further
 incorporated spatio-temporal path information of vehicles.
 Whilst this method improves the re-id performance on the VeRi-776 dataset,
-it may not generalize to complex scene structures when the number of 
-visual spatio-temporal path proposals is very large with only weak contextual 
+it may not generalize to complex scene structures when the number of
+visual spatio-temporal path proposals is very large with only weak contextual
 knowledge available to facilitate model decision.
 
 
@@ -258,7 +258,7 @@ knowledge available to facilitate model decision.
       Index & Orientation & Colour \\
       \hline
       0 & front & \textcolor{red}{red} \\
-      1 & rear & \textcolor{blue}{blue}  \\
+      1 & rear & -  \\
       2 & left  & - \\
       3 & left front & \textcolor{cyan}{cyan}  \\
       4 & left rear & \textcolor{yellow}{yellow}  \\
@@ -281,14 +281,6 @@ In order to perform accurate re-ID, we use this data to build a model constructe
 
 \subsection{Model Structure and Feature Learning}
 
-\begin{figure*}
-  \includegraphics[width=\linewidth,trim=0cm 8cm 0cm 0cm,clip=true]{images/system_overview_orient_only.pdf}
-  \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch
-    %(E) Vehicle landmark localisation branch.
-(E) Consensus learning through feature fusion. Feedforward signals shown in black. Hard target (groundtruth) loss propagation shown in \textcolor{red}{red}. Soft target consensus feedback loss propagation shown in \textcolor{green}{green}.}
-  \label{F:overview}
-\end{figure*}
-
 An overview of our proposed model can be seen in Figure \ref{F:overview}. The model is composed of a number of sub-branches, each of which is simultaneously learning a representation to solve its own set of tasks. In addition, there is a single fusion branch, which allows feature selection to be performed from the entire collection of individual representations. It is the output from this branch that is taken during deployment. Each sub-branch will now be described in more detail.
 
 \paragraph{(A) Vehicle Identity}
@@ -304,7 +296,15 @@ where $\hat{y_k} = \mathbf{w_k^Tx_i}$, $\mathbf{x_i}$ is the feature vector for 
   \label{E:cross_entropy_loss}
 \end{equation}
 
-\paragraph{(B) Multi-scale Analysis}
+\begin{figure*}
+  \includegraphics[width=\linewidth,trim=0cm 8cm 0cm 0cm,clip=true]{images/system_overview_orient_only.pdf}
+  \caption{An overview of our proposed model (best viewed in colour). (A) Vehicle identity branch (B) Multi-scale analysis branch (C) Grayscale analysis branch (D) Vehicle orientation branch
+    %(E) Vehicle landmark localisation branch.
+(E) Consensus learning through feature fusion. Feedforward signals shown in black. Hard target (groundtruth) loss propagation shown in \textcolor{red}{red}. Soft target consensus feedback loss propagation shown in \textcolor{green}{green}.}
+  \label{F:overview}
+\end{figure*}
+
+\paragraph{(B) Identity from Scaled Image}
 
 Here we exploit the multi-scale analysis that has previously been shown to be of benefit for the task of re-identification, both for persons \cite{chen2017person} and vehicles \cite{kanaci2018vehicle}. This is done by including a branch that is trained via cross entropy loss (Eq. \ref{E:cross_entropy_loss}) to predict the class identity from a rescaled version of the input image, in a similar way to branch A.
 
@@ -336,6 +336,7 @@ q_i^O =
     0 & \text{otherwise}
 \end{cases}
 \]
+
 %% \paragraph{(E) Vehicle Landmark Localisation}
 
 %% Vehicle landmarks are distinguishing features that must be employed in order to perform correct  re-identification of vehicles that look very similar. Hence it is crucial that our model picks up on these in its feature representation. In order to attempt to ensure this, we task one branch with simultaneously predicting the position of these landmarks (if present) as well as the identity class. As above, if no landmark labels are available in the minibatch, this branch is trained in exactly the same way as branch A.
@@ -417,14 +418,7 @@ We conduct a number of experiments to explore the performance of our method. Fir
 
 \subsection{Implementation Details}
 
-We employ the ResNet50 \cite{} network architecture as the base of our model.
-
-Details:
-- Learning rate of 0.0001
-- Batch size 8
-- Number of epochs.
-- Adam optimiser with exponential decay rates set as follows: $\beta_1=0.9$ and $\beta_2=0.999$.
-- The two scales used: standard $224\x224$ and small (for multiscale) $160\x160$.
+We employ the ResNet50 \cite{} network architecture as the base of our model. We train the model with minibatches of size 8, using the Adam optimisation technique with a learning rate of 0.0001, exponential decay rates set as follows: $\beta_1=0.9$ and $\beta_2=0.999$. The two image sizes used were standard $224\x224$ and small (for the scaled branch) $160\x160$.
 
 We measure the performance of our vehicle re-identification methods according to the standard Cumulative Matching Characteristic (CMC) and mean Average Precision (mAP). The CMC is computed on each individual rank $k$ as the cumulative percentage of correct matches appearing
 at ranks $\leq k$. The mAP is calculated as the mean over all query images of the Average Precision, which itself is calculated as the precision cut-off at each correct recalled image position averaged over all possible correct gallery images \cite{}.
@@ -452,9 +446,9 @@ We employ a number of previously released Vehicle Re-ID datasets in our experime
   \label{T:dataset_details}
 \end{table*}
 
-Table \ref{T:benchmark_results_veri} shows the results of the first experiment, where we train and test only on the VeRi776 dataset. As can be seen, our model achieves state-of-the-art mAP and Rank-1 scores on this dataset, of ... and ... respectively.
+Table \ref{T:benchmark_results_veri} shows the results of the first experiment, where we train and test only on the VeRi776 dataset. All experiments we continued for 150 epochs of training. As can be seen, even before re-ranking, our full model achieves state-of-the-art mAP and Rank-1 scores on this dataset, of 64.6 and 92.3 respectively. And after re-ranking the mAP score is increased to an impressive 68.3.
 
-After 100 epochs
+\emph{TODO more detailed discussion of results}
 
 \begin{table}
   \centering
@@ -466,17 +460,17 @@ After 100 epochs
     OIFE \cite{wang2017orientation} & 51.4 & 68.3 & 89.7 \\
     S-CNN+P-LSTM \cite{Shen_2017_ICCV} & 58.3 & 83.5 & 90.0 \\
     MTCRO \cite{xu2018framework} & 61.6 & 87.2 & 94.2 \\
-    \hline
-    MTML-S & 59.4 & 89.7 & 95.1 \\
-    MTML-O & \\
-    MTML-G & \\
-    % \hdashline
-    MTML-SG & 63.4 & 91.1 & 95.4 \\
-    MTML-OG & \\
-    MTML-OSG & \bf{61.8} & \bf{90.3} & \bf{95.4} \\
-    \hline
     MTCRO (ReRank) \cite{xu2018framework} & 62.6 & 88.0 & \bf{94.6} \\
-    MTML-OSG (ReRank) & \bf{65.8} & \bf{91.9} & 94.0 \\
+    \hline
+    MTML-S & 59.4 & 89.5 & 94.9 \\
+    MTML-O & 60.8 & 90.2 & 95.4 \\
+    MTML-G \emph{TODO} & 62.8 & 90.9 & 96.2 \\
+    \hdashline
+    MTML-SG & 63.7 & 90.6 & 95.8 \\
+    MTML-OG & 63.5 & 92.0 & \bf{96.4}\\
+    MTML-OSG & \bf{64.6} & \bf{92.3} & 95.7 \\
+    \hdashline
+    MTML-OSG (ReRank) & \bf{\emph{68.3}} & 92.0 & 94.2 \\
     \hline
   \end{tabular}
   \caption{Trained/tested on VeRi776 only}

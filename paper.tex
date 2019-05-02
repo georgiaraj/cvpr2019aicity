@@ -10,8 +10,18 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{multirow}
+<<<<<<< HEAD
 % \usepackage{arydshln}
 \usepackage{subcaption}
+=======
+<<<<<<< HEAD
+% \usepackage{arydshln}
+% \usepackage{todonotes}
+=======
+\usepackage{arydshln}
+\usepackage{subcaption}
+>>>>>>> e5e018ecb6db264c0f87b6bfce9aaf7c51b0ff67
+>>>>>>> 2a77dbc25d71a64ace3e2b0373e72f1c7173c0fd
 
 \def\x{{\mathsf x}}
 
@@ -204,6 +214,34 @@ improved representation for the purpose of vehicle re-identification.
 
 \section{Multi-modal Vehicle Re-identification}
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+In order to perform Re-ID of previously unseen query vehicles, the aim of our
+model is to learn an feature embedding that allows for accurate retrivals based
+on distance (\eg L1) from the query image representation. In order to perform
+this task, we utilise training data containing a number of different labels:
+identity class labels, vehicle orientation class labels, and landmark position
+labels for a number of specific keypoints. We assume two sets of training
+examples 
+$\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ 
+and 
+$\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, 
+containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels 
+$\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, 
+where $y_i \in \left[1,...,N_{id}\right]}$ for $N_{id}$ 
+distinct vehicle idenities spanning the two training sets. However, in
+addition, $\mathcal{I}_1$ also contains orientation labels,
+$\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ 
+is the orientation (for $N_O$ possible orientations).
+
+%and landmark position labels $\mathcal{L_1}=\{\mathbf{l_i}\}_{i=1}^N$ $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
+
+In order to perform accurate re-ID, we use this data to build a model
+constructed from a number of branches, each of which is tasked with learning a
+specific aspect of the data. \emph{TODO expand}
+=======
+>>>>>>> 2a77dbc25d71a64ace3e2b0373e72f1c7173c0fd
 In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn a feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels as well as vehicle orientation class labels.
 %and landmark position labels for a number of specific keypoints
 We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation labels, $\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations).
@@ -403,8 +441,18 @@ After 100 epochs
     MTML-S & 59.4 & 89.7 & 95.1 \\
     MTML-O & \\
     MTML-G & \\
+<<<<<<< HEAD
     % \hdashline
     MTML-SG & 63.4 & 91.1 & 95.4 \\
+=======
+<<<<<<< HEAD
+    % \hdashline
+    MTML-SG & \\
+=======
+    \hdashline
+    MTML-SG & 63.4 & 91.1 & 95.4 \\
+>>>>>>> e5e018ecb6db264c0f87b6bfce9aaf7c51b0ff67
+>>>>>>> 2a77dbc25d71a64ace3e2b0373e72f1c7173c0fd
     MTML-OG & \\
     MTML-OSG & \bf{61.8} & \bf{90.3} & \bf{95.4} \\
     \hline

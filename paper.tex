@@ -177,6 +177,76 @@ improved representation for the purpose of vehicle re-identification.
 
 \section{Related Work}
 
+\noindent {\bf Vehicle Model Classification }
+One closely related problem to re-identification is vehicle model
+classification
+\cite{liao2015exploiting,gu2013car,lin2014jointly,yang2015compcars,sochor2016boxcars,hu2017deep}.
+But, the two problems are usually studied independently.
+For example, Yang et al. \cite{yang2015compcars} propose a part attributes driven 
+vehicle model recognition. 
+They also contribute a large comprehensive car dataset named ``CompCars''
+with model class labels but without vehicle identity labels. 
+More recently, Hu et al. \cite{hu2017deep} formulate a deep CNN framework capable of 
+selecting spatial salient vehicle parts in order to learn more
+discriminative model representations without explicit parts annotations, with
+
+\noindent {\bf Vehicle Re-Identification. }
+Whist vehicle re-id is less studied than person re-id
+\cite{gong2014person,li2014deepreid,ahmed2015improved,xiao2016learning,li2017person,sun2017svdnet,li2018harmonious,zhong2017camera},
+there are a handful of existing methods.
+%Notably, Feris \etal \cite{feris2012large} proposed an attribute-based re-id method. 
+%The vehicles are firstly classified by different attributes like car model types and colours. The re-id matching is then conducted in the attribute space.
+%%
+%Dominik \etal \cite{zapletal2016vehicle}
+%used 3D bounding boxes for rectifying car images and then concatenate colour histogram features of vehicle image pairs. 
+%A binary linear SVM model is then trained to verify whether a pair of images have the same identity.
+%%
+%Both methods rely heavily on weak hand-crafted visual features in a
+%complex multi-step based approach, suffering from weak discriminative model generalisation.
+
+
+Recently, deep learning techniques have been exploited to vehicle re-id.  Liu
+\etal \cite{Liu2016eccv_veri} explored a deep neural network to estimate the
+visual similarities between vehicle images.
+%Vehicle appearances, spatio-temporal information and license plates are
+%independently and incrementally used to improve the similarity function for
+%vehicle matching.  they use a deep neural network to estimate the visual
+%similarities between vehicle images for enjoying the strong representation
+%learning capacity.
+%
+Liu \etal \cite{Liu2016cvpr_drdl} also designed a Coupled Clusters Loss (CCL)
+to boost a multi-branch CNN model for vehicle re-id. 
+%
+All these methods utilize the global appearance features of vehicle images and
+ignore local discriminative regions.
+%
+To explore local information and motivated by the idea of landmark alignment
+\cite{zhang2014facial} in both face recognition \cite{taigman2014deepface} and
+human body pose estimation \cite{newell2016stacked}, Wang \etal
+\cite{Wang_2017_ICCV} considered 20 vehicle keypoints for learning and aligning
+local regions of a vehicle for re-id.  Clearly, this approach comes with extra
+cost of exhaustively labeling these keypoints in a large number of vehicle
+images, and the implicit assumption of having sufficient image
+resolution/details for computing these keypoints.
+%
+
+Additionally, 
+space-time contextual knowledge has also been exploited for vehicle re-id
+subject to structured scenes \cite{Liu2016eccv_veri,Shen_2017_ICCV}.
+Liu \etal \cite{Liu2016eccv_veri} proposed
+a spatio-temporal affinity approach for quantifying every pair of images.
+%This method is inclined to image pairs that are close to each other 
+%in both spatial and temporal domains therefore only a simplified solution.
+%
+Shen \etal \cite{Shen_2017_ICCV} further 
+incorporated spatio-temporal path information of vehicles.
+Whilst this method improves the re-id performance on the VeRi-776 dataset,
+it may not generalize to complex scene structures when the number of 
+visual spatio-temporal path proposals is very large with only weak contextual 
+knowledge available to facilitate model decision.
+
+
+\section{Multi-modal Vehicle Re-identification}
 \begin{figure*}
   \begin{subfigure}{.6\textwidth}
     \includegraphics[width=\linewidth,trim=5cm 11cm 5cm 11cm,clip=true]{images/veri_orients.pdf}
@@ -201,8 +271,6 @@ improved representation for the purpose of vehicle re-identification.
   \caption{Examples from the VeRi776 dataset with the orientation labels provided in \cite{wang2017orientation} (best viewed in colour).}
   \label{T:veri_veh_orientations}
 \end{figure*}
-
-\section{Multi-modal Vehicle Re-identification}
 
 In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn a feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels as well as vehicle orientation class labels.
 %and landmark position labels for a number of specific keypoints

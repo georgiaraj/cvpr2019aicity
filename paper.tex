@@ -210,7 +210,6 @@ We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^
 %and landmark position labels $\mathcal{L_1}=\{\mathbf{l_i}\}_{i=1}^N$ $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
 In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data concurrently. The branches of the model are as follows: A) Identity classification B) Identity classification from a scaled image C) Identity from grayscale image D) Identity plus the vehicles' orienations. The individual branches then form a consensus prediction on the identity of the training examples, and this consensus is then employed for regulation of the individual branches.
->>>>>>> e5e018ecb6db264c0f87b6bfce9aaf7c51b0ff67
 
 \subsection{Model Structure and Feature Learning}
 

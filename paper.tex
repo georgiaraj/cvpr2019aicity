@@ -29,7 +29,7 @@
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 %\ifcvprfinal\pagestyle{empty}\fi
-\setcounter{page}{4321}
+\setcounter{page}{1}
 
 
 %% helper definitions
@@ -81,45 +81,86 @@ Queen Mary University of London\\
 \section{Introduction}
 
 %%% Background and motivation
-As the ubiquitousness of surveillance cameras capturing vehicle in transport in
-cities and highways increase, the need for analyzing this visual data has
-become an interest in computer vision. With the advent of autonomous driving
+%As the ubiquitousness of surveillance cameras capturing vehicle in transport in
+%cities and highways increase, the need for analyzing this visual data has
+%become an interest in computer vision.
+
+%% Background of vehicle re-ID
+With the development of autonomous driving
 and smart city applications the need for accurately analyzing vehicles in these
 scenarios with related computer vision tasks \ie detection, classification and
 pose estimation as well as re-identification is ever-increasing.
+%
+Specially, vehicle re-identification (re-ID) attracted increasing attentions in community
+\cite{liu2016vehicleid,Liu2016cvpr_drdl,liu2016veri,Liu2016eccv_veri,
+wang2017orientation,Wang_2017_ICCV,Zhou2018VAMI},
+since it can play an important role in
+intelligent transportation system and social safety.
 
-Vehicle re-identification (re-ID) aims at searching a target vehicle
-(identity) across non-overlapping camera views by image matching.
-Vehicle re-identification received less attention than person re-identification
-which is been studied extensively \cite{gong2014re, Li2018Harmonious,
-chen2017person}.\todo{add more citation}
+%% What's vehicle re-ID?
+Vehicle re-identification task aims at searching a specific vehicle
+instance across non-overlapping camera views.
+%
+Due to the unavailability of license plate under some circumstances,
+vehicle re-ID by visual appearance is of great practical value in real-world applications such as smart cities.
+%
+This task is similar with a more popular task: person re-identification
+\cite{gong2014re,chen2017person,Li2018Harmonious,xiao2016learning,
+li2017person,wei2018person,song2018mask,chang2018multi,
+shen2018deep,zhang2017deep,shen2018person,suh2018part},
+but with more challenges:
+%% Vehicle re-ID challenges
+(1) Unlike person re-id, pose/orientation of vehicles results in self occlusion and drastic visual geometry changes, since vehicle is a kind of rigid body.
+% The same vehicle under different viewpoints are visually more diverse than person,
+This means that the same identity must be inferred with any pose/orientation of the vehicle is given.
+(2) Even the same orientation, the different identity vehicles may look very similar
+due to the similar even same vehicle model. This requires the vehicle re-id model
+to have a more powerful fine-grained recognition ability.
 
-As a unique ID of a vehicle, license plate has been widely used for vehicle
-re-ID. However, license plate recognition is quite sensitive to image quality,
-camera view and occlusion. Furthermore, license plate may be removed,
-altered even faked in some cases, making it unreliable to identify a vehicle
-simply by its license plate. Therefore, vehicle re-ID by visual appearance is
-of great practical value in real-world applications such as smart cities.
+% Existing work's problem
 
-A related problem to vehicle re-identification is fine-grained vehicle model
-classification such as ``Audi A4 2014''\cite{yang2015compcars}.
-However, the granularity of vehicle re-identification task is much finer
-since the ideal target is to search a specific vehicle rather than a model, in
-which the image instances of the same vehicle (identity) forms a separate
-class.
-%%% Vehicle re-id challenges
-However,
-vehicle re-id by visual appearance is a
-challenging task due to the very similar appearance of different vehicle instances
-of the same model type and color, and a significant visual appearance variation
-of the same vehicle instance in different camera views. In other words
-large intra-instance differences of the same vehicle in different cameras,
-and subtle inter-instance differences between different vehicles in the same
-view, considering thousands of vehicles in a large scale smart city setting is
-the main challenge of vehicle re-ID. Moreover, unlike person re-id
-orientation of vehicles results in self occlusion and drastic visual geometry
-changes where in person re-id visual geometry or texture of the person's
-appearance (wear) will not change.
+% Our motivation
+
+
+% Our contributions
+In this work, we propose a noval mutual learning based network architecture,
+that aims to simultaneously learn a number of tasks, plus a consensus, to build an
+improved representation for the purpose of vehicle re-identification.
+
+These two contributions of our work are highlighted as follows:
+(1)
+(2)
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Generally, vehicle re-id task can be regarded as a fine-grained recognition task.
+%As a unique ID of a vehicle instance, license plate has been widely used for vehicle re-ID.
+%However, license plate recognition is quite sensitive to image quality,
+%camera view and occlusion. Furthermore, license plate may be removed,
+%altered even faked in some cases, making it unreliable to identify a vehicle
+%simply by its license plate. Therefore, vehicle re-ID by visual appearance is
+%of great practical value in real-world applications such as smart cities.
+
+%Another related problem to vehicle re-identification is fine-grained vehicle model
+%classification such as ``Audi A4 2014'' \cite{yang2015compcars}.
+%However, the granularity of vehicle re-identification task is much finer
+%since the ideal target is to search a specific vehicle rather than a model, in
+%which the image instances of the same vehicle (identity) forms a separate class.
+%%%% Vehicle re-id challenges
+%However,
+%vehicle re-id by visual appearance is a
+%challenging task due to the very similar appearance of different vehicle instances
+%of the same model type and color, and a significant visual appearance variation
+%of the same vehicle instance in different camera views. In other words
+%large intra-instance differences of the same vehicle in different cameras,
+%and subtle inter-instance differences between different vehicles in the same
+%view, considering thousands of vehicles in a large scale smart city setting is
+%the main challenge of vehicle re-ID. Moreover, unlike person re-id
+%orientation of vehicles results in self occlusion and drastic visual geometry
+%changes where in person re-id visual geometry or texture of the person's
+%appearance (wear) will not change.
 % re-ID problem. A human body is usually upright, thus the texture or color of
 % his/her wear will not change severely in different views. Deploying the
 % person re-ID methods for vehicles directly cannot obtain satisfactory
@@ -128,59 +169,58 @@ appearance (wear) will not change.
 % of the vehicle can alter very predictably the appearance of in a particular
 % viewpoint.
 
-
 % This area promises the potential for more flexible means for vehicle
 % recognition and search than Automatic Number Plate Recognition (ANPR).
-
 % be found as an instance-level object search problem.
 
+%%%% matching probe gallery
+%Formally re-ID  aims to find
+%target images of the same identity in a large gallery set given a probe image.
+%In order to match appearances of objects, firstly we need to obtain an
+%embedding for the objects. A
+%match is then performed by using a suitable distance metric expressing the
+%closeness of two objects in an embedding space. A good embedding should be
+%invariant to illumination, scale and viewpoint changes.
 
-%%% matching probe gallery
-Formally re-ID  aims to find
-target images of the same identity in a large gallery set given a probe image.
-In order to match appearances of objects, firstly we need to obtain an
-embedding for the objects. A
-match is then performed by using a suitable distance metric expressing the
-closeness of two objects in an embedding space. A good embedding should be
-invariant to illumination, scale and viewpoint changes.
+%%%% we use CNNs
+%Recently, Convolutional Neural Network (CNN) has achieved state-of-the-art
+%performance in various computer vision
+%recognition tasks, such as large-scale image classification
+%face recognition  and person re-ID.
+%With the supervision of a carefully designed objective loss, typically
+%cross-entropy and/or triplet loss
+%% contrastive loss or triplet loss
+%CNN can learn efficient feature embedding
 
-%%% we use CNNs
-Recently, Convolutional Neural Network (CNN) has achieved state-of-the-art
-performance in various computer vision
-recognition tasks, such as large-scale image classification
-face recognition  and person re-ID.
-With the supervision of a carefully designed objective loss, typically
-cross-entropy and/or triplet loss
-% contrastive loss or triplet loss
-CNN can learn efficient feature embedding
+%%%% Datasets and SOTA
+%Influenced by the recent advancements on person re-id vehicle re-id has started
+%to gain increasing attention,
+%and a number of vehicle databases and additional labeling are now available to
+%facilitate this research
+% including
+% VeRi-776\cite{Liu2016icme-veri, Liu2016eccv_veri},
+% VehicleID\cite{liu2016vehicleid} and VRIC\cite{kanaci2018vehicle} and methods
+% specific to vehicle re-ID becoming more frequent in various venues
+% \cite{wang2017orientation, Shen_2017_ICCV, Zhou2018VAMI}.
+%
+%%%% Our method:
+%\todo{Expand near submission}
+%In this paper we propose a new mutual learning based network architecture, that
+%aims to simultaneously learn a number of tasks, plus a consensus, to build an
+%improved representation for the purpose of vehicle re-identification.
+%% Second, we propose to leverage multi-task learning to gen- erate discriminative
+%% feature representation by the joint op- timization of group sensitive triplet
+%% loss and softmax loss, which can be well applied to accomplish large scale
+%% vehicle re-identification towards real applications.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%% Datasets and SOTA
-Influenced by the recent advancements on person re-id vehicle re-id has started
-to gain increasing attention,
-and a number of vehicle databases and additional labeling are now available to
-facilitate this research
- including
- VeRi-776\cite{Liu2016icme-veri, Liu2016eccv_veri},
- VehicleID\cite{liu2016vehicleid} and VRIC\cite{kanaci2018vehicle} and methods
- specific to vehicle re-ID becoming more frequent in various venues
- \cite{wang2017orientation, Shen_2017_ICCV, Zhou2018VAMI}.
-
-%%% Our method:
-\todo{Expand near submission}
-In this paper we propose a new mutual learning based network architecture, that
-aims to simultaneously learn a number of tasks, plus a consensus, to build an
-improved representation for the purpose of vehicle re-identification.
-% Second, we propose to leverage multi-task learning to gen- erate discriminative
-% feature representation by the joint op- timization of group sensitive triplet
-% loss and softmax loss, which can be well applied to accomplish large scale
-% vehicle re-identification towards real applications.
 
 \section{Related Work}
 
 \noindent {\bf Vehicle Model Classification }
 One closely related problem to re-identification is vehicle model
 classification
-\cite{liao2015exploiting,gu2013car,lin2014jointly,yang2015compcars,sochor2016boxcars,hu2017deep}.
+\cite{liao2015exploiting,yang2015compcars,sochor2016boxcars,hu2017deep}.
 But, the two problems are usually studied independently.
 For example, Yang et al. \cite{yang2015compcars} propose a part attributes driven
 vehicle model recognition.
@@ -191,9 +231,9 @@ selecting spatial salient vehicle parts in order to learn more
 discriminative model representations without explicit parts annotations, with
 
 \noindent {\bf Vehicle Re-Identification. }
-Whist vehicle re-id is less studied than person re-id
-\cite{gong2014person,li2014deepreid,ahmed2015improved,xiao2016learning,li2017person,sun2017svdnet,Li2018Harmonious,zhong2017camera},
-there are a handful of existing methods.
+%Whist vehicle re-id is less studied than person re-id
+%\cite{gong2014person,li2018harmonious,zhong2017camera},
+%there are a handful of existing methods.
 %Notably, Feris \etal \cite{feris2012large} proposed an attribute-based re-id method.
 %The vehicles are firstly classified by different attributes like car model types and colours. The re-id matching is then conducted in the attribute space.
 %%
@@ -203,8 +243,6 @@ there are a handful of existing methods.
 %%
 %Both methods rely heavily on weak hand-crafted visual features in a
 %complex multi-step based approach, suffering from weak discriminative model generalisation.
-
-
 Recently, deep learning techniques have been exploited to vehicle re-id.  Liu
 \etal \cite{Liu2016eccv_veri} explored a deep neural network to estimate the
 visual similarities between vehicle images.
@@ -258,7 +296,7 @@ knowledge available to facilitate model decision.
       Index & Orientation & Colour \\
       \hline
       0 & front & \textcolor{red}{red} \\
-      1 & rear & -  \\
+      1 & rear & - \\
       2 & left  & - \\
       3 & left front & \textcolor{cyan}{cyan}  \\
       4 & left rear & \textcolor{yellow}{yellow}  \\
@@ -272,12 +310,13 @@ knowledge available to facilitate model decision.
   \label{T:veri_veh_orientations}
 \end{figure*}
 
-In order to perform Re-ID of previously unseen query vehicles, the aim of our model is to learn a feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels as well as vehicle orientation class labels.
+In order to perform re-ID of previously unseen query vehicles, the aim of our model is to learn a feature embedding that allows for accurate retrivals based on distance (\eg L1) from the query image representation. In order to perform this task, we utilise training data containing a number of different labels: identity class labels as well as vehicle orientation class labels.
 %and landmark position labels for a number of specific keypoints
 We assume two sets of training examples $\mathcal{I}_1 = \{\mathbf{I_i}\}_{i=1}^N$ and $\mathcal{I}_2 = \{\mathbf{I_i}\}_{i=1}^M$, containing $N$ and $M$ training images respectively. Both training sets contain the associated identity class labels $\mathcal{Y}_1=\{y_i\}_{i=1}^N$ and $\mathcal{Y}_2=\{y_i\}_{i=1}^M$, where $y_i \in \left[1,...,N_{id}\right]$ for $N_{id}$ distinct vehicle idenities spanning the two training sets. However, in addition, $\mathcal{I}_1$ also contains orientation labels, $\mathcal{O_1}=\{o_i\}_{i=1}^N$, where $o_i \in \left[1,...,N_O\right]$ is the orientation (for $N_O$ possible orientations).
 %and landmark position labels $\mathcal{L_1}=\{\mathbf{l_i}\}_{i=1}^N$ $\mathbf{l_i}=\{\left(x_{i,1},y_{i,1}\right),...,\left(x_{i,L},y_{i,L}\right)\}$ defines the position of $N_L$ keypoint landmarks for the vehicle within image $\mathbf{I}_i$, which we normalise according to the image size so that $x,y \in [0,1]$
 
-In order to perform accurate re-ID, we use this data to build a model constructed from a number of branches, each of which is tasked with learning a specific aspect of the data concurrently. The branches of the model are as follows: A) Identity classification B) Identity classification from a scaled image C) Identity from grayscale image D) Identity plus the vehicles' orienations. The individual branches then form a consensus prediction on the identity of the training examples, and this consensus is then employed for regulation of the individual branches.
+In order to perform accurate re-ID, we use this data to build a model constructed from multiple branches, each of which is tasked with learning a specific aspect of the data concurrently. The branches of the model are as follows: A) Identity classification B) Identity classification from a scaled image C) Identity from grayscale image D) Identity plus the vehicles' orienations.
+These individual branches then form a consensus prediction on the identity of the training examples, and this consensus is then employed for regulation of the individual branches.
 
 \subsection{Model Structure and Feature Learning}
 
@@ -285,14 +324,15 @@ An overview of our proposed model can be seen in Figure \ref{F:overview}. The mo
 
 \paragraph{(A) Vehicle Identity}
 
-The root branch of our model is tasked with learning the best representation for vehicle identity discrimination, for both training sets. Here, we exploit the cross entropy classification loss function in order to train one branch to predict vehicle identity. Thus the branch calculates the softmax posterior probability of the class label $y_i$ for a given training image $\mathbf{I_i}$:
+The root branch of our model is tasked with learning the best representation for vehicle identity discrimination, for both training sets $\mathcal{I}_1$ and $\mathcal{I}_2$.
+Here, we exploit the cross entropy classification loss function in order to train one branch to predict vehicle identity. Thus the branch calculates the softmax posterior probability of the class label $y_i$ for a given training image $\mathbf{I_i}$:
 \begin{equation}
   p_i^{ID} = p(\hat{y_i} = y_i|\mathbf{I_i}) = \frac{\exp(\hat{y_i})}{\sum_{k=1}^{N_{id}}\exp(\hat{y_k})}
   \label{E:softmax_id}
 \end{equation}
 where $\hat{y_k} = \mathbf{w_k^Tx_i}$, $\mathbf{x_i}$ is the feature vector for image $\mathbf{I_i}$ given by final layer of the branch, and $\mathbf{w_k}$ is the prediction function parameter for identity class $\emph{k}$. The loss across a minibatch of $N_B$ images can then be computed as:
 \begin{equation}
-  l_{ID} = -\frac{1}{N_B} \sum_{i=1}^{N_B} \log{p_i^{ID}}
+  L_{ID} = -\frac{1}{N_B} \sum_{i=1}^{N_B} \log{p_i^{ID}}
   \label{E:cross_entropy_loss}
 \end{equation}
 
@@ -326,7 +366,7 @@ where this time $\hat{o_j} = \mathbf{w_j^Tx_j}$, and $\mathbf{w_j}$ is the predi
 
 The loss for this branch is then calculated across the minibatch of images as:
 \begin{equation}
-  l_{O} = -\frac{1}{N_B} \sum_{i=1}^{N_B}\log{p_i^{ID}} + \frac{1}{N_S} \sum_{i=1}^{N_B}q_i^O
+  L_{O} = -\frac{1}{N_B} \sum_{i=1}^{N_B}\log{p_i^{ID}} + \frac{1}{N_S} \sum_{i=1}^{N_B}q_i^O
 \end{equation}
 where $N_S$ is the size of the subset of the minibatch for which orientation labels are known, and
 \[
@@ -336,7 +376,6 @@ q_i^O =
     0 & \text{otherwise}
 \end{cases}
 \]
-
 %% \paragraph{(E) Vehicle Landmark Localisation}
 
 %% Vehicle landmarks are distinguishing features that must be employed in order to perform correct  re-identification of vehicles that look very similar. Hence it is crucial that our model picks up on these in its feature representation. In order to attempt to ensure this, we task one branch with simultaneously predicting the position of these landmarks (if present) as well as the identity class. As above, if no landmark labels are available in the minibatch, this branch is trained in exactly the same way as branch A.
@@ -373,7 +412,7 @@ Specifically, the feedback mechanism employs the consensus probability predictio
 \end{equation}
 The total consensus loss for a particular branch is then:
 \begin{equation}
-  l_{C} = \frac{1}{N_B} \sum_{i=1}^{N_B} \mathcal{H}_i
+  L_{C} = \frac{1}{N_B} \sum_{i=1}^{N_B} \mathcal{H}_i
 \end{equation}
 This is added to each individual branch's loss functions. In addition, this mechanism provides regularisation of the whole network by propagating all of the consensus losses back through the feature fusion layer, which also boosts the learning of the ensemble.
 
@@ -408,9 +447,8 @@ In order to train our model, we combine both training sets, $\mathcal{I}_1$ and 
 
 During deployment, we employ the feature fusion layer from our trained model as the full feature representation in order to perform vehicle re-identification matching. As we do not necessarily have camera information about the query or gallery images, or timestamp information, which would allow the use of camera distance or time-based analysis, we use only a generic distance metric - the $L1$ metric - in order to match gallery images to the query. Hence, for each of the query image $\mathbf{I}^q$, and the gallery images $\{\mathbf{I}_i^g\}$,  we compute our $6400$ dimension fused feature representations, $\mathbf{x}^q$ and $\{\mathbf{x}_i^g\}$ respectively. We then calculate the $L1$ distance between the query representation and each of the gallery images, and rank the latter by increasing distance in order to calculate the Rank-1 and mAP performance scores.
 
-\subsection{Re-ranking}
-
-\emph{TODO}
+%\subsection{Re-ranking}
+%\emph{TODO}
 
 \section{Experiments}
 
@@ -460,7 +498,7 @@ Table \ref{T:benchmark_results_veri} shows the results of the first experiment, 
     OIFE \cite{wang2017orientation} & 51.4 & 68.3 & 89.7 \\
     S-CNN+P-LSTM \cite{Shen_2017_ICCV} & 58.3 & 83.5 & 90.0 \\
     MTCRO \cite{xu2018framework} & 61.6 & 87.2 & 94.2 \\
-    MTCRO (ReRank) \cite{xu2018framework} & 62.6 & 88.0 & \bf{94.6} \\
+    MTCRO (ReRank) \cite{xu2018framework} & 62.6 & 88.0 & 94.6 \\
     \hline
     MTML-S & 59.4 & 89.5 & 94.9 \\
     MTML-O & 60.8 & 90.2 & 95.4 \\

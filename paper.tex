@@ -152,8 +152,34 @@ However, we argue that vehicle ID label {\em alone} can not differentiate the di
 As a result, we suggest that imposing multiple and different supervisory signals
 simultaneously - the vehicle ID \emph{and} vehicle orientation - allows the model to learn this variation in a more well-defined manner, and is thus more effective
 for learning the fine-grained discriminative features necessary for vehicle
-Re-ID. As orientation labels were provided by Wang \etal \cite{Wang_2017_ICCV} for the VeRi dataset \cite{liu2016veri}, is is possible to make use of these multiple signals for this purpose.
+Re-ID. As orientation labels were provided by Wang \etal \cite{Wang_2017_ICCV} for the VeRi dataset \cite{liu2016veri}, is is possible to make use of these multiple signals for this purpose. Examples of the orientation labels provided by this paper can be seen in Figure \ref{F:veri_veh_orientations}.
 
+
+
+\begin{figure*}[t]
+  \begin{subfigure}{.6\textwidth}
+    \includegraphics[width=\linewidth,trim=5cm 11cm 5cm 11cm,clip=true]{images/veri_orients.pdf}
+  \end{subfigure}
+  \begin{subfigure}{.4\textwidth}
+    \centering
+    \begin{tabular}{c | c | c}
+      \hline
+      Index & Orientation & Colour \\
+      \hline
+      0 & front & \textcolor{red}{red} \\
+      1 & rear & - \\
+      2 & left  & - \\
+      3 & left front & \textcolor{cyan}{cyan}  \\
+      4 & left rear & \textcolor{yellow}{yellow}  \\
+      5 & right  & - \\
+      6 & right front & \textcolor{green}{green} \\
+      7 & right rear & \textcolor{black}{black} \\
+      \hline
+    \end{tabular}
+  \end{subfigure}
+  \caption{Examples from the VeRi776 dataset with the orientation labels provided in \cite{wang2017orientation} (best viewed in colour).}
+  \label{F:veri_veh_orientations}
+\end{figure*}
 
 %\begin{figure}
 %%  \includegraphics[width=\linewidth,trim=0cm 8cm 0cm 0cm,clip=true]{images/system_overview_orient_only.pdf}
@@ -185,32 +211,6 @@ proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniq
 We also yield competitive performance on the CityFlow
 \cite{tang2019cityflow} benchmark at the NVIDIA 2019 AI City Challenge.
 
-
-
-\begin{figure*}[t]
-  \begin{subfigure}{.6\textwidth}
-    \includegraphics[width=\linewidth,trim=5cm 11cm 5cm 11cm,clip=true]{images/veri_orients.pdf}
-  \end{subfigure}
-  \begin{subfigure}{.4\textwidth}
-    \centering
-    \begin{tabular}{c | c | c}
-      \hline
-      Index & Orientation & Colour \\
-      \hline
-      0 & front & \textcolor{red}{red} \\
-      1 & rear & - \\
-      2 & left  & - \\
-      3 & left front & \textcolor{cyan}{cyan}  \\
-      4 & left rear & \textcolor{yellow}{yellow}  \\
-      5 & right  & - \\
-      6 & right front & \textcolor{green}{green} \\
-      7 & right rear & \textcolor{black}{black} \\
-      \hline
-    \end{tabular}
-  \end{subfigure}
-  \caption{Examples from the VeRi776 dataset with the orientation labels provided in \cite{wang2017orientation} (best viewed in colour).}
-  \label{T:veri_veh_orientations}
-\end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Generally, vehicle Re-ID task can be regarded as a fine-grained recognition task.
@@ -596,18 +596,19 @@ We conduct a number of experiments to explore the performance of our method. Fir
 
 
 \subsection{Datasets}
-We employ a number of previously released Vehicle Re-ID datasets in our experiments, in order to train and test our method extensively. Firstly we conduct experiments on two benchmark datasets in Table \ref{T:dataset_details}:
-VeRi776 \cite{liu2016veri} and VehicleID \cite{liu2016vehicleid}.
+We employ two Vehicle Re-ID datasets in our experiments, in order to train and test our method extensively. Firstly we conduct experiments on a benchmark dataset, VeRi776 \cite{liu2016veri}, which has been widely tested by the majority of recent works. And secondly we employ the new CityFlow dataset \cite{tang2019cityflow}, a challenging dataset that has been shown to be more difficult than previous publicly available benchmarks.
 %
-The VeRi-776 dataset \cite{liu2016veri} has 37,778 images of 576 IDs in training set and 200
-IDs in test set. The standard probe and gallery sets consist of 1,678 and 11,579
-images, respectively. The data split statistics are summarised in Table 3.
+The VeRi-776 dataset \cite{liu2016veri} has 37,778 images of 576 IDs in the training set and 200
+IDs in the test set. The standard probe and gallery sets consist of 1,678 and 11,579
+images, respectively. There are also orientation labels, for 8 possible orientations, available for the VeRi-776 dataset, which were provided by \cite{Wang_2017_ICCV}.
 %
-The VehicleID \cite{liu2016vehicleid} dataset provides a training set with 113,346 from 13,164 IDs and a test set
-with 19,777 images from 2,400 identities. It adopts the single-shot re-id setting,
-with only one true matching for each probe. Following the standard setting, we
-repeated 10 times of randomly selected probe and gallery sets in our experiments.
-
+%% The VehicleID \cite{liu2016vehicleid} dataset provides a training set with 113,346 from 13,164 IDs and a test set
+%% with 19,777 images from 2,400 identities. It adopts the single-shot re-id setting,
+%% with only one true matching for each probe. Following the standard setting, we
+%% repeated 10 times of randomly selected probe and gallery sets in our experiments.
+%
+The CityFlow dataset \cite{tang2019cityflow} has 36,935 images of 333 IDs in the training set and 333 different IDs in the test set. The standard probe and gallery sets consist of 1,052 and 18,290 images respectively.
+The data split statistics of both datasets are summarised in Table \ref{T:dataset_details}.
 
 \subsection{Implementation Details}
 We employ the ResNet50 \cite{he2016deep} network
@@ -621,23 +622,26 @@ We measure the performance of our vehicle re-identification methods according to
 at ranks $\leq k$. The mAP is calculated as the mean over all query images of the Average Precision, which itself is calculated as the precision cut-off at each correct recalled image position averaged over all possible correct gallery images.
 
 \subsection{Evaluation on the Veri776 Dataset}
-First, we train and test on the VeRi776 dataset so to compare with
-existing state-of-the-art methods on identical settings.
-Table \ref{T:benchmark_results_veri} shows the results of the first
-experiment, where we train and test only on the VeRi776 dataset. All
-experiments we continued for 150 epochs of training. As can be seen,
+Firstly, we train and test on the VeRi776 dataset in order to compare with
+existing state-of-the-art methods with identical settings. In order to experiment the benefit of adding each of the separate branches of our model, we take branch A (vehicle identity) as our central branch, and of course all models have an E consensus branch, and then perform experiments where we include each of the other branches in turn. So MTML-S refers to a model built from branches A, B and E only, MTML-G has branches A, C and E only, and so on. We then test versions of the model with three branches (e.g. MTML-SG includes branches A, B, C and E).  MTML-OSG is then our full model, and MTML-OSG (ReRank) the results of the full model after additional re-ranking. Table \ref{T:benchmark_results_veri} shows the results of this
+experiment, with all experiments run for 150 epochs of training. As can be seen,
 even before re-ranking, our full model achieves state-of-the-art mAP
 and Rank-1 scores on this dataset, of 64.6\% and 92.3\%
 respectively. And after re-ranking the mAP score is increased to an
 impressive 68.3\%.
+
+The experiments also show how the individual branches contribute to the performance, with orientation improving over the result of a scaled analysis, and grayscale doing even better. This demonstrates how allowing the model to learn about the orientation of the vehicle at the same time as identity can strengthen the performance. And that removal of the colour during learning - though obviously a useful indicator of identity at test time - allows for the model to focus on the more discriminatory features of the identity that ultimately boosts the re-id performance.
+
+The combinations of three branches all show improvement over only two, though not as well as combining all four in the MTML-OSG model. These results show that combining all the different tasks does indeed allow for the overall model to perform better in the final task of vehicle re-identification.
+
 %\textcolor{red}{TODO more detailed discussion of results}
 
-\subsection{Evaluation on the VehicleID Dataset}
-Second, we then train on both the VeRi776 and VehicleID datasets, and
-test on VehicleID with all three of its test sets: small, medium and
-large. We conducted this experiment to explore the benefit of training
-model using additional orientation labels, as VeRi776 is the only
-dataset available with orientation labels.
+%% \subsection{Evaluation on the VehicleID Dataset}
+%% Second, we then train on both the VeRi776 and VehicleID datasets, and
+%% test on VehicleID with all three of its test sets: small, medium and
+%% large. We conducted this experiment to explore the benefit of training
+%% model using additional orientation labels, as VeRi776 is the only
+%% dataset available with orientation labels.
 
 %% \textcolor{red}
 %% {

@@ -630,9 +630,9 @@ and Rank-1 scores on this dataset, of 64.6\% and 92.3\%
 respectively. And after re-ranking the mAP score is increased to an
 impressive 68.3\%.
 
-The experiments also show how the individual branches contribute to the performance, with orientation improving over the result of a scaled analysis, and grayscale doing even better. This demonstrates how allowing the model to learn about the orientation of the vehicle at the same time as identity can strengthen the performance. And that removal of the colour during learning - though obviously a useful indicator of identity at test time - allows for the model to focus on the more discriminatory features of the identity that ultimately boosts the re-id performance.
+The mAP results from the experiments also show how the individual branches contribute to the performance, with orientation (60.8\%) improving over the result of scaled analysis alone (59.4\%), and grayscale doing even better (62.8\%). This demonstrates how allowing the model to learn about the orientation of the vehicle at the same time as identity can strengthen the performance. And that removal of the colour during learning - though obviously a useful indicator of identity at test time - allows for the model to focus on the more discriminatory features of the identity that ultimately boosts the re-id performance.
 
-The combinations of three branches all show improvement over only two, though not as well as combining all four in the MTML-OSG model. These results show that combining all the different tasks does indeed allow for the overall model to perform better in the final task of vehicle re-identification.
+The combinations of three branches all show improvement over only two, with MTML-SG and MTML-OG achieving mAPs of 63.7\% and 63.5\% respectively. However they are still outperformed by combining all four branches in the MTML-OSG model. These results show that combining all the different signals for MTL does indeed allow for the overall model to perform better in the final task of vehicle re-identification.
 
 %\textcolor{red}{TODO more detailed discussion of results}
 

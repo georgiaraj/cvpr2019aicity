@@ -90,8 +90,7 @@ to learn discriminative features simultaeously from multiple branches.
 Specially, we design a consensus learning loss function by fusing features from the final convolutional feature maps from all branches.
 %
 Extensive comparative evaluations demonstrate the effectiveness of our
-proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the two existing benchmarks
-(VehicleID and VeRi-776).
+proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the a large-scale benchmarks VeRi-776.
 We also yield competitive performance on the NVIDIA 2019 AI City Challenge Track 2.
 \end{abstract}
 
@@ -206,8 +205,9 @@ Our model benefits from multiple supervisory signals in order to
 enhance model learning of more discrimative features for vehicle Re-ID.
 %(3) we propose a cross-dataset joint learning framework for vehicle Re-ID.
 Extensive comparative evaluations demonstrate the effectiveness of the
-proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the two existing benchmarks
-(VehicleID \cite{liu2016vehicleid} and VeRi-776 \cite{liu2016veri}).
+proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the a large-scale benchmark
+%VehicleID \cite{liu2016vehicleid} and 
+VeRi-776 \cite{liu2016veri}.
 We also yield competitive performance on the CityFlow
 \cite{tang2019cityflow} benchmark at the NVIDIA 2019 AI City Challenge.
 
@@ -621,9 +621,10 @@ standard $224\x224$ and small (for the scaled branch) $160\x160$.
 We measure the performance of our vehicle re-identification methods according to the standard Cumulative Matching Characteristic (CMC) and mean Average Precision (mAP). The CMC is computed on each individual rank $k$ as the cumulative percentage of correct matches appearing
 at ranks $\leq k$. The mAP is calculated as the mean over all query images of the Average Precision, which itself is calculated as the precision cut-off at each correct recalled image position averaged over all possible correct gallery images.
 
-\subsection{Evaluation on the Veri776 Dataset}
+\subsection{Evaluation on Veri776 Dataset}
 Firstly, we train and test on the VeRi776 dataset in order to compare with
-existing state-of-the-art methods with identical settings. In order to experiment the benefit of adding each of the separate branches of our model, we take branch A (vehicle identity) as our central branch, and of course all models have an E consensus branch, and then perform experiments where we include each of the other branches in turn. So MTML-S refers to a model built from branches A, B and E only, MTML-G has branches A, C and E only, and so on. We then test versions of the model with three branches (e.g. MTML-SG includes branches A, B, C and E).  MTML-OSG is then our full model, and MTML-OSG (ReRank) the results of the full model after additional re-ranking. Table \ref{T:benchmark_results_veri} shows the results of this
+existing state-of-the-art methods with identical settings. In order to experiment the benefit of adding each of the separate branches of our model, we take branch A (vehicle identity) as our central branch, and of course all models have an E consensus branch, and then perform experiments where we include each of the other branches in turn. So MTML-S refers to a model built from branches A, B and E only, MTML-G has branches A, C and E only, and so on. We then test versions of the model with three branches (e.g. MTML-SG includes branches A, B, C and E).  
+MTML-OSG (branches A, B, C, D and E) is then our full model, and MTML-OSG (ReRank \cite{zhong2017re}) the results of the full model after additional re-ranking. Table \ref{T:benchmark_results_veri} shows the results of this
 experiment, with all experiments run for 150 epochs of training. As can be seen,
 even before re-ranking, our full model achieves state-of-the-art mAP
 and Rank-1 scores on this dataset, of 64.6\% and 92.3\%
@@ -674,7 +675,7 @@ The combinations of three branches all show improvement over only two, with MTML
 %  \label{T:benchmark_results_vehicleid}
 %\end{table}
 
-\subsection{NVIDIA AI City Challenge 2019}
+\subsection{Evaluation on CityFlow Dataset}
 
 \begin{table}[h]
   \centering
@@ -682,7 +683,7 @@ The combinations of three branches all show improvement over only two, with MTML
     \hline
     Method & mAP & Rank-1 & Rank-5 \\
     \hline
-    Resnet50\cite{tang2019cityflow} & 25.5 & 41.3 & - \\
+    Resnet50 \cite{tang2019cityflow} & 25.5 & 41.3 & - \\
     \hline
     MTML-S  & 17.0 & 40.4 & 53.3 \\
     MTML-G  & 19.6 & 44.5 & 58.4 \\
@@ -708,8 +709,8 @@ The combinations of three branches all show improvement over only two, with MTML
   \hline
   MTML-O       &       &         &         &       &        &         \\
   MTML-S       &       &         &         &       &        &         \\
-  MTML-G       & 61.6  & 89.7    & 95.1    &       &        &         \\
-  MTML-SG      & 62.6  & 90.8    & 95.8    &       &        &         \\
+  MTML-G       & 61.6  & 89.7    & 95.1    & 22.3  & 47.4   & 57.3   \\
+  MTML-SG      & 62.6  & 90.8    & 95.8    & 23.0  & 46.6   & 60.5   \\
   MTML-OG      &       &         &         &       &        &         \\
   MTML-OSG     &       &         &         &       &        &      \\
   \hline
@@ -719,6 +720,26 @@ The combinations of three branches all show improvement over only two, with MTML
 \end{table}
 
 We participated in Task 2 of the NVIDIA AI City Challenge 2019. The aim of this task was attempt city-scale multi-camera vehicle re-identification. Multiple cameras were placed at multiple intersections and no camera information was provided about the images.
+
+Two groups of experiments are conducted on CityFlow benchmark: 
+(1) Training on CityFlow, and (2) Training on CityFlow and Veri-776.
+%
+For the first group experiment, we trained MTML-S (branch A, B and E), 
+MTML-G (branch A, C and E) and MTML-SG model only on CityFlow training data.
+Table \ref{T:cityflow_results} shows that: 
+(1) -G branch combination is much better than -S branch combination. 
+The potential reason is that grayscale analysis is more useful than mult-scale in vehicle Re-ID.
+(2) Joint learning with -S and -G is better than any individual one of them on mAP evaluation.
+
+%The reason of combine Veri-776 dataset into training set is that
+Since the orientation label is only available in Veri-776, 
+for training the full MTML model including orientation supervisory signal,
+we did the second group experiment.
+%
+%Table \ref{T:cf_veri_res} shows that: 
+
+
+
 
 %\begin{table}
 %  \centering
@@ -741,8 +762,8 @@ to learn discriminative feature simultaeously from multiple branches.
 Moreover, we design a consensus learning loss function by fusing feature of the final convolutional feature maps from all branches.
 %
 Extensive comparative evaluations demonstrate the effectiveness of the
-proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the two existing benchmarks
-(VehicleID and VeRi-776).
+proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the a existing large-scale benchmarks VeRi-776.
+%VehicleID and
 We also yield a competitive performance on the NVIDIA 2019 AI City Challenge Track 2.
 
 {\small

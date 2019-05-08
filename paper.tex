@@ -85,11 +85,11 @@ Most of existing vehicle Re-ID model cannot make full use of
 various complementary vehicle information, e.g. vehicle type and orientation.
 %
 In this paper, we propose a novel {\em Multi-Task Mutual Learning} (MTML) deep model
-to learn discriminative feature simultaeously from multiple branches.
+to learn discriminative features simultaeously from multiple branches.
 %
-Specially, we design a consensus learning loss function by fusing feature of the final convolutional feature maps from all branches.
+Specially, we design a consensus learning loss function by fusing features from the final convolutional feature maps from all branches.
 %
-Extensive comparative evaluations demonstrate the effectiveness of the
+Extensive comparative evaluations demonstrate the effectiveness of our
 proposed MTML method in comparison to the state-of-the-art vehicle Re-ID techniques on the two existing benchmarks
 (VehicleID and VeRi-776).
 We also yield competitive performance on the NVIDIA 2019 AI City Challenge Track 2.
@@ -105,57 +105,54 @@ We also yield competitive performance on the NVIDIA 2019 AI City Challenge Track
 
 %% Background of vehicle Re-ID
 With the development of autonomous driving
-and smart city applications, the need for accurately analyzing vehicles on urban streets 
-by incorporating all the necessary computer vision tasks including detection, classification and
-pose estimation as well as re-identification is ever-increasing.
+and smart city applications, the need to accurately analyze vehicles on urban streets
+via multiple computer vision tasks such as detection, classification and
+pose estimation, as well as re-identification, is ever-increasing.
 %
-Specially, vehicle re-identification attracted increasing attentions in the research community
+Specially, vehicle re-identification has attracted increasing attention in the research community
 \cite{liu2016vehicleid,liu2016veri,liu2016veri,
 wang2017orientation,Wang_2017_ICCV,Zhou2018VAMI},
-since it can play an important role in
+as it can play an important role in
 intelligent transportation systems and public safety.
 
 %% What's vehicle Re-ID?
-Vehicle re-identification (Re-ID) aims at searching a specific vehicle
+Vehicle re-identification (Re-ID) aims to search a specific vehicle
 instance across non-overlapping camera views.
 %
-Due to the unavailability of license plate under uncontrolled view angles,
-vehicle Re-ID by visual appearance is of great practical value in real-world applications such as smart cities.
+Due to the fact that the license plate is often not visible in a number of view angles (which are generally uncontrolled),
+vehicle Re-ID by visual appearance alone is of great practical value in real-world applications such as smart cities.
 %
-This task is similar with a more popular task: person re-identification
+This task is similar to a more popular task: person re-identification
 \cite{gong2014re,chen2018person,Li2018Harmonious,xiao2016learning,
 li2017person,wei2018person,song2018mask,chang2018multi,
 shen2018deep,zhang2017deep,shen2018person,suh2018part},
 but with more challenges:
 %% Vehicle Re-ID challenges
-(1) Unlike person Re-ID, pose/orientation of vehicles results in occlusion and drastic visual geometry changes, since vehicle is a kind of rigid body.
+(1) Unlike person Re-ID, the pose/orientation of vehicles results in occlusion and drastic visual geometry changes, since the vehicle is a kind of rigid body.
 % The same vehicle under different viewpoints are visually more diverse than person,
-This means that the same identity must be inferred with any given pose/orientation of a vehicle.
+This means that is difficult to infer the same identity from any given pose/orientation of a vehicle.
 (2) Even in the same orientation, vehicles of different identities may look very similar
-due to the same vehicle model. This requires vehicle Re-ID models
+due to the being of the same, or similar, vehicle model. This requires vehicle Re-ID models
 to have a more discriminative fine-grained recognition ability.
 
 % Existing work's problem
-Most of vehicle Re-ID methods \cite{liu2016vehicleid,liu2016veri,Shen_2017_ICCV,Zhou2018VAMI}
-focus on using a single branch
-to learn an embedding feature for vehicle instance re-identification
+Most previously proposed vehicle Re-ID methods \cite{liu2016vehicleid,liu2016veri,Shen_2017_ICCV,Zhou2018VAMI} focus on using a single branch
+to learn an embedded feature representation for vehicle instance re-identification
 from the original information (e.g. the original whole vehicle image).
 %
-Due to the previously metioned challenges for vehicle re-identification,
+Due to the previously mentioned challenges for vehicle re-identification,
 this single branch structure can not take advantage of the diversity of vehicles.
 %
 Moreover, most existing works
 \cite{liu2016vehicleid,liu2016veri}
-train vehicle Re-ID deep learning model
+train their vehicle Re-ID deep learning model
 using a single supervisory signal (e.g. vehicle ID).
 %
-However, vehicle ID label {\em alone} can not differentiate the differences between vehicles due to:
-(1) vehicle instances of the same ID under different viewpoints,
-(2) vehicle instances of different IDs under the same viewpoint.
-We suggest that imposing multiple and different supervisory signals
-simultaneously (e.g. vehicle ID and vehicle orientation) is more effective
-for learning more fine-grained discriminative features for vehicle
-Re-ID. 
+However, we argue that vehicle ID label {\em alone} can not differentiate the differences between vehicles due to the issues we raised above. But additionally we can make use of the fact that the orientation of a vehicle alters its view in a predictable manner.
+As a result, we suggest that imposing multiple and different supervisory signals
+simultaneously - the vehicle ID \emph{and} vehicle orientation - allows the model to learn this variation in a more well-defined manner, and is thus more effective
+for learning the fine-grained discriminative features necessary for vehicle
+Re-ID. As orientation labels were provided by Wang \etal \cite{Wang_2017_ICCV} for the VeRi dataset \cite{liu2016veri}, is is possible to make use of these multiple signals for this purpose.
 
 
 %\begin{figure}
@@ -170,14 +167,14 @@ In this work, we propose a novel {\em Multi-Task Mutual Learning}
 that aims to simultaneously learn a number of recognition tasks from
 different supervisory signals, plus a consensus loss function, to
 build an improved representation for the purpose of vehicle
-re-identification. 
+re-identification.
 
 We make two contributions in this work as follows:
 (1) We formulate a novel {\em Multi-Task Mutual Learning} (MTML) deep
 learning model by building each individual branch for a different
 recognition task relevant to vehicle Re-ID and by taking into
-consideration different four tasks including vehicle ID, multi-scale, grayscale, and orientation.
-Our model aims to discover and capture concurrently complementary discriminative information.
+consideration four different tasks: vehicle ID, multi-scale, grayscale, and orientation.
+Our model aims to discover and capture concurrently the complementary discriminative information.
 (2) We introduce a mutual learning mechanism for improving multi-task learning robustness.
 Our model benefits from multiple supervisory signals in order to
 enhance model learning of more discrimative features for vehicle Re-ID.
@@ -323,7 +320,7 @@ discriminative model representations without explicit parts annotations.
 %%
 %Both methods rely heavily on weak hand-crafted visual features in a
 %complex multi-step based approach, suffering from weak discriminative model generalisation.
-Deep learning techniques have been exploited to vehicle Re-ID. For instance, Liu
+A number of deep learning techniques have been exploited for the purpose vehicle Re-ID. For instance, Liu
 \etal \cite{liu2016veri} explored a deep neural network to estimate the
 visual similarities between vehicle images.
 %Vehicle appearances, spatio-temporal information and license plates are
@@ -343,7 +340,7 @@ To explore local information motivated by the idea of landmark alignment
 human body pose estimation \cite{newell2016stacked}, Wang \etal
 \cite{Wang_2017_ICCV} considered 20 vehicle keypoints for learning and aligning
 local regions of a vehicle for Re-ID.  Clearly, this approach comes with extra
-cost of exhaustively labeling these keypoints in a large number of vehicle
+cost of exhaustively labelling these keypoints in a large number of vehicle
 images, and the implicit assumption of having sufficient image
 resolution/details for extracting these keypoints.
 %
@@ -382,9 +379,8 @@ has been proven to be effective in solving computer vision problems
 %
 Critically, our method is uniquely designed to
 explore the potential of MTL
-in combining multiple diversities (e.g. scale and color) of the vechile image
-and being supervised by multiple kinds of manual labels (e.g. ID and orientation).
-Each of them is associated with an individual branch of a single model.
+in combining multiple diversities (e.g. scale and color) of the vehicle image
+and being supervised by multiple kinds of manual labels (e.g. ID and orientation) with each of them being associated with an individual branch of a single model.
 
 
 \section{Multi-modal Vehicle Re-identification}
@@ -414,7 +410,7 @@ task. In addition, there is a single fusion branch, which allows
 feature selection to be performed from the entire collection of
 individual representations. It is the output from this branch that is
 taken during deployment. Each sub-branch will now be described in more
-detail. 
+detail.
 
 \paragraph{(A) Vehicle Identity}
 
@@ -441,7 +437,7 @@ that allow for separation of highly similar identity classes, we
 ensure that one branch will be unable to use colour information for
 distinguishing between these classes. This is done by giving as input
 only the grayscale image, and again training the branch to predict
-identity via the cross entropy loss. 
+identity via the cross entropy loss.
 
 \paragraph{(D) Vehicle Orientation}
 
@@ -491,12 +487,12 @@ q_i^O =
 
 \paragraph{(E) Consensus Learning and Feedback}
 
-In order to harness the benefit of all branches for the purpose of vehicle re-identification, we employ consensus learning as proposed in \cite{chen2017person} and previously harnessed for vehicle Re-ID in \cite{kanaci2018vehicle}. This is done via feature fusion of the final convolutional feature maps from all branches for consensus learning. As our branches are based on the ResNet50 architecture, these feature maps are formed via an average pooling operation which result in feature vectors of length $2048$. Hence our fused features are of length $8192$. We then add one additional fully connected layer, of size $1024$, and the output of this passed to a final identity softmax classification layer, again employed with cross entropy loss. Hence:
+In order to harness the benefit of all branches for the purpose of vehicle re-identification, we employ consensus learning as proposed in \cite{chen2017person} and previously harnessed for vehicle Re-ID in \cite{kanaci2018vehicle}. This is done via feature fusion of the final convolutional feature maps from all branches for consensus learning. As our branches are based on the ResNet50 architecture \cite{he2016deep}, these feature maps are formed via an average pooling operation which result in feature vectors of length $2048$. Hence our fused features are of length $8192$. We then add one additional fully connected layer, of size $1024$, and the output of this passed to a final identity softmax classification layer, again employed with cross entropy loss. Hence:
 \begin{equation}
   p_i^C = p(\hat{y_i^C} = y_i|\mathbf{I_i}) = \frac{\exp(\hat{y_i^C})}{\sum_{k=1}^{N_{id}}\exp(\hat{y_k^C})}
 \end{equation}
 
-Additionally, we also utilise a consensus propagation mechanism, similar to the previously proposed method \cite{chen2017person,kanaci2018vehicle}. Here the consensus output is taken as 'soft targets' (as opposed to the groundtruth label 'hard targets') for the training data, and used to feedback information about the predictions made by the entire ensemble of branches. This is done concurrently with the training of the individual branches. Thie method is inspired by the idea of Knowledge Distillation (KD) \cite{hinton2015distilling}, but is different in that here we employ the combined predictions from all the `student' branches as a \emph{virtual} teacher model, rather than utilising a pre-trainined powerful teacher model to provide the soft targets.
+Additionally, we also utilise a consensus propagation mechanism, similar to the previously proposed method \cite{chen2017person,kanaci2018vehicle}. Here the consensus output is taken as `soft targets' (as opposed to the groundtruth label `hard targets') for the training data, and used to feedback information about the predictions made by the entire ensemble of branches. This is done concurrently with the training of the individual branches. Thie method is inspired by the idea of Knowledge Distillation (KD) \cite{hinton2015distilling}, but is different in that here we employ the combined predictions from all the `student' branches as a \emph{virtual} teacher model, rather than utilising a pre-trainined powerful teacher model to provide the soft targets.
 
 Specifically, the feedback mechanism employs the consensus probability predictions $P^C_i = \left[p_{i,1}^C,...,p_{i,j}^C,...,p_{i,N_{ID}}^C\right]$ given image $\mathbf{I_i}$, feeding these into the cross entropy loss between the two distributions to provide a consensus regularisation loss for the branch:
 \begin{equation}
@@ -556,7 +552,7 @@ During deployment, we employ the feature fusion layer from our trained model as 
 %     & 13164 & 100182 & - & 2400 & 17638 & 2400 & 2400 \\
 %    BoxCars \cite{} & 21250 & 63750 & -  & - & - & - & - \\
 %    CompCars \cite{} & 1118 & 31148 & - & - & - & - & - \\
-    CityFlow \cite{tang2019cityflow} 
+    CityFlow \cite{tang2019cityflow}
     & 333 & 36935 & - & 333 & 1052 & 333 & 18290 \\
     \hline
   \end{tabular}
@@ -614,12 +610,12 @@ repeated 10 times of randomly selected probe and gallery sets in our experiments
 
 
 \subsection{Implementation Details}
-We employ the ResNet50 \cite{} ({\bf SG: missing reference}) network
+We employ the ResNet50 \cite{he2016deep} network
 architecture as the base of our model. We train the model with
 minibatches of size 8, using the Adam optimisation technique with a
 learning rate of 0.0001, exponential decay rates set as follows:
 $\beta_1=0.9$ and $\beta_2=0.999$. The two image sizes used were
-standard $224\x224$ and small (for the scaled branch) $160\x160$. 
+standard $224\x224$ and small (for the scaled branch) $160\x160$.
 
 We measure the performance of our vehicle re-identification methods according to the standard Cumulative Matching Characteristic (CMC) and mean Average Precision (mAP). The CMC is computed on each individual rank $k$ as the cumulative percentage of correct matches appearing
 at ranks $\leq k$. The mAP is calculated as the mean over all query images of the Average Precision, which itself is calculated as the precision cut-off at each correct recalled image position averaged over all possible correct gallery images.
@@ -633,7 +629,7 @@ experiments we continued for 150 epochs of training. As can be seen,
 even before re-ranking, our full model achieves state-of-the-art mAP
 and Rank-1 scores on this dataset, of 64.6\% and 92.3\%
 respectively. And after re-ranking the mAP score is increased to an
-impressive 68.3\%. 
+impressive 68.3\%.
 %\textcolor{red}{TODO more detailed discussion of results}
 
 \subsection{Evaluation on the VehicleID Dataset}
@@ -643,12 +639,12 @@ large. We conducted this experiment to explore the benefit of training
 model using additional orientation labels, as VeRi776 is the only
 dataset available with orientation labels.
 
-\textcolor{red}
-{
-Table \ref{T:benchmark_results_vehicleid} shows that ...
-(Please add some comparison methods in Table 3)
-}
-({\bf SG: missing results})
+%% \textcolor{red}
+%% {
+%% Table \ref{T:benchmark_results_vehicleid} shows that ...
+%% (Please add some comparison methods in Table 3)
+%% }
+%% ({\bf SG: missing results})
 
 %\begin{table}
 %  \centering

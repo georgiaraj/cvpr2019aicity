@@ -56,7 +56,7 @@ Vision Semantics Ltd\\
 % just like the second author.
 % To save space, use either the email address or home page, not both
 \and
-Aytac Kanaci \hspace{0.7cm}
+Ayta\c{c} Kanac\i \hspace{0.7cm}
 %Queen Mary University of London\\
 %{\tt\small secondauthor@i2.org}
 %\and
@@ -176,7 +176,7 @@ Re-ID. As orientation labels were provided by Wang \etal \cite{Wang_2017_ICCV} f
       \hline
     \end{tabular}
   \end{subfigure}
-  \caption{Examples from the VeRi776 dataset with the orientation labels provided in \cite{wang2017orientation} (best viewed in colour).}
+  \caption{Examples from the VeRi-776 dataset with the orientation labels provided in \cite{wang2017orientation} (best viewed in colour).}
   \label{F:veri_veh_orientations}
 \end{figure*}
 
@@ -533,7 +533,7 @@ In order to train our model, we combine both training sets, $\mathcal{I}_1$ and 
 
 \subsection{Vehicle Re-ID deployment}
 
-During deployment, we employ the feature fusion layer from our trained model as the full feature representation in order to perform vehicle re-identification matching. As we do not necessarily have camera information about the query or gallery images, or timestamp information, which would allow the use of camera distance or time-based analysis, we use only a generic distance metric - the $L1$ metric - in order to match gallery images to the query. Hence, for each of the query image $\mathbf{I}^q$, and the gallery images $\{\mathbf{I}_i^g\}$,  we compute our $6400$ dimension fused feature representations, $\mathbf{x}^q$ and $\{\mathbf{x}_i^g\}$ respectively. We then calculate the $L1$ distance between the query representation and each of the gallery images, and rank the latter by increasing distance in order to calculate the Rank-1 and mAP performance scores.
+During deployment, we employ the feature fusion layer from our trained model as the full feature representation in order to perform vehicle re-identification matching. As we do not necessarily have camera information about the query or gallery images, or timestamp information, which would allow the use of camera distance or time-based analysis, we use only a generic distance metric - the $L2$ metric - in order to match gallery images to the query. Hence, for each of the query image $\mathbf{I}^q$, and the gallery images $\{\mathbf{I}_i^g\}$,  we compute our $6400$ dimension fused feature representations, $\mathbf{x}^q$ and $\{\mathbf{x}_i^g\}$ respectively. We then calculate the $L2$ distance between the query representation and each of the gallery images, and rank the latter by increasing distance in order to calculate the Rank-1 and mAP performance scores.
 
 %\subsection{Re-ranking}
 %\emph{TODO}
@@ -588,7 +588,7 @@ During deployment, we employ the feature fusion layer from our trained model as 
     MTML-OSG (ReRank) & \bf{\emph{68.3}} & 92.0 & 94.2 \\
     \hline
   \end{tabular}
-  \caption{Trained/tested on VeRi776 only}
+  \caption{Trained/tested on VeRi-776 only}
   \label{T:benchmark_results_veri}
 \end{table}
 
@@ -596,7 +596,7 @@ We conduct a number of experiments to explore the performance of our method. Fir
 
 
 \subsection{Datasets}
-We employ two Vehicle Re-ID datasets in our experiments, in order to train and test our method extensively. Firstly we conduct experiments on a benchmark dataset, VeRi776 \cite{liu2016veri}, which has been widely tested by the majority of recent works. And secondly we employ the new CityFlow dataset \cite{tang2019cityflow}, a challenging dataset that has been shown to be more difficult than previous publicly available benchmarks.
+We employ two Vehicle Re-ID datasets in our experiments, in order to train and test our method extensively. Firstly we conduct experiments on a benchmark dataset, VeRi-776 \cite{liu2016veri}, which has been widely tested by the majority of recent works. And secondly we employ the new CityFlow dataset \cite{tang2019cityflow}, a challenging dataset that has been shown to be more difficult than previous publicly available benchmarks.
 %
 The VeRi-776 dataset \cite{liu2016veri} has 37,778 images of 576 IDs in the training set and 200
 IDs in the test set. The standard probe and gallery sets consist of 1,678 and 11,579
@@ -622,7 +622,7 @@ We measure the performance of our vehicle re-identification methods according to
 at ranks $\leq k$. The mAP is calculated as the mean over all query images of the Average Precision, which itself is calculated as the precision cut-off at each correct recalled image position averaged over all possible correct gallery images.
 
 \subsection{Evaluation on Veri776 Dataset}
-Firstly, we train and test on the VeRi776 dataset in order to compare with
+Firstly, we train and test on the VeRi-776 dataset in order to compare with
 existing state-of-the-art methods with identical settings. In order to experiment the benefit of adding each of the separate branches of our model, we take branch A (vehicle identity) as our central branch, and of course all models have an E consensus branch, and then perform experiments where we include each of the other branches in turn. So MTML-S refers to a model built from branches A, B and E only, MTML-G has branches A, C and E only, and so on. We then test versions of the model with three branches (e.g. MTML-SG includes branches A, B, C and E).  
 MTML-OSG (branches A, B, C, D and E) is then our full model, and MTML-OSG (ReRank \cite{zhong2017re}) the results of the full model after additional re-ranking. Table \ref{T:benchmark_results_veri} shows the results of this
 experiment, with all experiments run for 150 epochs of training. As can be seen,
@@ -638,10 +638,10 @@ The combinations of three branches all show improvement over only two, with MTML
 %\textcolor{red}{TODO more detailed discussion of results}
 
 %% \subsection{Evaluation on the VehicleID Dataset}
-%% Second, we then train on both the VeRi776 and VehicleID datasets, and
+%% Second, we then train on both the VeRi-776 and VehicleID datasets, and
 %% test on VehicleID with all three of its test sets: small, medium and
 %% large. We conducted this experiment to explore the benefit of training
-%% model using additional orientation labels, as VeRi776 is the only
+%% model using additional orientation labels, as VeRi-776 is the only
 %% dataset available with orientation labels.
 
 %% \textcolor{red}
@@ -671,11 +671,33 @@ The combinations of three branches all show improvement over only two, with MTML
 %    MTML-OSG+ReRank & \\
 %    \hline
 %  \end{tabular}
-%  \caption{Trained on VeRi776+VehicleID, tested on VehicleID}
+%  \caption{Trained on VeRi-776+VehicleID, tested on VehicleID}
 %  \label{T:benchmark_results_vehicleid}
 %\end{table}
 
 \subsection{Evaluation on CityFlow Dataset}
+
+%%% Old %50 percent table %%%
+% \begin{table}[h]
+%   \centering
+%   \begin{tabular}{l || c | c | c }
+%     \hline
+%     Method & mAP & Rank-1 & Rank-5 \\
+%     \hline
+%     Resnet50 \cite{tang2019cityflow} & 25.5 & 41.3 & - \\
+%     \hline
+%     MTML-S  & 17.0 & 40.4 & 53.3 \\
+%     MTML-G  & 19.6 & \bf 44.5 & \bf 58.4 \\
+% %    \hdashline
+%     \hline
+%     MTML-SG & \bf{20.6} & 44.1 & 55.8 \\
+% %    \hdashline
+%     MTML-SG (ReRank) & \bf{\emph {25.7}} & 43.4 & 47.2 \\
+%     \hline
+%   \end{tabular}
+%   \caption{Trained/tested on CityFlow}
+%   \label{T:cityflow_results}
+% \end{table}
 
 \begin{table}[h]
   \centering
@@ -690,39 +712,84 @@ The combinations of three branches all show improvement over only two, with MTML
     \hdashline
     MTML-SG & 20.6 & 44.1 & 55.8 \\
     \hdashline
-    MTML-SG (ReRank) &  & & \\
+    MTML-SG (ReRank) & 25.7 & 43.4 & 47.2 \\
     \hline
   \end{tabular}
   \caption{Trained/tested on CityFlow}
   \label{T:cityflow_results}
 \end{table}
 
-
 \begin{table}[h]
   \centering
   \setlength{\tabcolsep}{0.05cm}
-  \begin{tabular}{l|c|c|c|c|c|c}
+    \begin{tabular}{p{2cm}|c|c|c|c|c|c}
   \hline
-  \multicolumn{1}{r|}{Test:} & \multicolumn{3}{c|}{VeRi-776} & \multicolumn{3}{c}{CityFlow} \\
+  \multicolumn{1}{r|}{} & \multicolumn{3}{c|}{VeRi-776} & \multicolumn{3}{c}{CityFlow} \\
   \hline
   Method       & mAP   & Rank-1  & Rank-5  & mAP   & Rank-1 & Rank-5  \\
   \hline
-  MTML-O       &       &         &         &       &        &         \\
-  MTML-S       &       &         &         &       &        &         \\
-  MTML-G       & 61.6  & 89.7    & 95.1    & 22.3  & 47.4   & 57.3   \\
-  MTML-SG      & 62.6  & 90.8    & 95.8    & 23.0  & 46.6   & 60.5   \\
-  MTML-OG      &       &         &         &       &        &         \\
-  MTML-OSG     &       &         &         &       &        &      \\
+% %50 percent results
+%   MTML-S       & 58.4  & 88.5    & 94.6    & 19.7  & 42.4   & 56.0    \\
+%   MTML-O       & 59.2  & 89.9    & 94.9    & 20.9  & 46.6   & 59.6    \\
+%   MTML-G       & 61.6  & 89.7    & 95.1    & 22.3  & 47.4   & 57.3   \\
+%   \hline
+%   MTML-SG      & 62.6  & 90.8    & \bf{95.8}    & 23.0  & 46.6   & 60.5   \\
+%   MLML-OG      & 62.0  & 91.2    & 95.6    & 23.8  & 49.1   & 60.9    \\
+%   MTML-OSG    & \bf{62.6}  & 90.6    & 95.5   & \bf{24.6}  & \bf{51.1}   & \bf{61.5} \\
+%   MTML-OSG (ReRank)   & \bf{\emph{66.4}}  & \bf{91.5}    & 93.6   & \bf{\emph{30.4}}  & 50.9   & 53.7 \\
+  MTML-S       & 58.4  & 88.5    & 94.6    & 18.9  & 40.6   & 53.3   \\
+  MTML-O       & 59.2  & 89.9    & 94.9    & 20.3  & 44.3   & 56.0   \\
+  MTML-G       & 61.6  & 89.7    & 95.1    & 21.6  & 46.1   & 57.5   \\
+    \hdashline
+  MTML-SG      & 62.6  & 90.8    & \bf{95.8}  & 22.1  & 45.8  & 56.5   \\
+  MLML-OG      & 62.0  & \bf{91.2}  & 95.6    & 22.9  & 46.6  & 58.2    \\
+  MTML-OSG     & \bf{62.6}  & 90.6   & 95.5   & \bf{23.6}  & \bf{48.9}  & \bf{59.7}   \\
+    \hdashline
+  MTML-OSG (ReRank)   & \bf{\emph{66.4}}  & 91.5  & 93.6  & \bf{\emph{29.2}}  & 48.8 & 50.7  \\
   \hline
   \end{tabular}
   \caption{Trained/tested on CityFlow+VeRi-776}
   \label{T:cf_veri_res}
 \end{table}
 
-We participated in Task 2 of the NVIDIA AI City Challenge 2019. The aim of this task was attempt city-scale multi-camera vehicle re-identification. Multiple cameras were placed at multiple intersections and no camera information was provided about the images.
+\begin{figure*}[ht]
+    \centering
+    \renewcommand{\arraystretch}{2.8}
+    \begin{tabular}{rcl}
+        & \textbf{AP} & \textbf{Query - Ranks(1-10)} \\ 
+    \multirow{2}{*}{\textbf{a)}} & 0.34        &  \multirow{2}{*}{\begin{minipage}{0.7\textwidth} \includegraphics[width=\linewidth]{images/pair_a.png} \end{minipage} }  \\
+                                 & 0.51        &                        \\
+
+    \multirow{2}{*}{\textbf{b)}} & 0.19        &  \multirow{2}{*}{\begin{minipage}{0.7\textwidth} \includegraphics[width=\linewidth]{images/pair_b.png} \end{minipage} }  \\
+                                 & 0.81        &                        \\
+
+    \multirow{2}{*}{\textbf{c)}} & 0.09        &  \multirow{2}{*}{\begin{minipage}{0.7\textwidth} \includegraphics[width=\linewidth]{images/pair_c.png} \end{minipage} }  \\
+                                 & 0.18        &                        \\
+
+    \multirow{2}{*}{\textbf{d)}} & 0.33        &  \multirow{2}{*}{\begin{minipage}{0.7\textwidth} \includegraphics[width=\linewidth]{images/pair_d.png} \end{minipage} }  \\
+                                 & 1.0         &                       
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+%	\vspace{-0.2cm}
+    
+    \caption{
+        Qulitative comparison of example query images between expriment with
+        and without orientaion branch.
+        Rank-1 to Rank-10 is shown. Each pair compares MTML-SG
+        (upper) to MTML-OSG (below) trained and tested on the VeRi-776. 
+        AP refers to Average Precision of that query. 
+    }
+    \label{fig:ranks}
+%    \vspace{-0.7cm}
+\end{figure*}
+
+We participated in Task 2 of the NVIDIA AI City Challenge 2019. The aim of this
+task was attempt city-scale multi-camera vehicle re-identification. Multiple
+cameras were placed at multiple intersections and no camera information was
+provided about the images.
 
 Two groups of experiments are conducted on CityFlow benchmark: 
-(1) Training on CityFlow, and (2) Training on CityFlow and Veri-776.
+(1) Training on CityFlow, and (2) Training on CityFlow and VeRi-776.
 %
 For the first group experiment, we trained MTML-S (branch A, B and E), 
 MTML-G (branch A, C and E) and MTML-SG model only on CityFlow training data.
@@ -730,13 +797,41 @@ Table \ref{T:cityflow_results} shows that:
 (1) -G branch combination is much better than -S branch combination. 
 The potential reason is that grayscale analysis is more useful than mult-scale in vehicle Re-ID.
 (2) Joint learning with -S and -G is better than any individual one of them on mAP evaluation.
+Another interesting thing is that
+after re-ranking algorithm, mAP performance improves while CMC performace drops.
+The possible reason is that more similar image vehicles will get close after re-ranking.
+This means some false matching images at high rank will ``attract'' more false matching images after re-ranking.
+In such a case, it will impact CMC performance.
 
-%The reason of combine Veri-776 dataset into training set is that
-Since the orientation label is only available in Veri-776, 
+%The reason of combine VeRi-776 dataset into training set is that
+Since the orientation label is only available in VeRi-776, 
 for training the full MTML model including orientation supervisory signal,
 we did the second group experiment.
 %
-%Table \ref{T:cf_veri_res} shows that: 
+Table \ref{T:cf_veri_res} shows that: 
+(1) By adding VeRi-776 training data,
+with MTML-S, MTML-G and MTML-SG, 
+we all obtain the better mAP and CMC performance on CityFlow
+than the model only training on CityFlow.
+Meanwhile, the mAP and CMC performance is a slightly lower on VeRi-776
+than the model only training on VeRi-776. We suspect this is due to training
+for 100 epochs, compared to 150.
+(2) By adding orientation branch, MLTML-OSG totaling 4 bracnhes, 
+we obtian the best mAP performance {62.6\%} and {23.6\%} on VeRi-776 and
+CityFlow repectively. 
+This shows that our mutual learning between orientation branch supervised by orientation label and other branches supervised by ID label is effective.
+
+%(1) After including Veri776 data for training orientation branch (O branch),
+%we get a better mAP performance (23.8\%) than only tr on CityFlow dataset.
+%(2) we can get the best mAP performance XXX\% and XXX\% 
+%on VeRi-776 and CityFlow respectively
+%by combining all branches of our model.
+
+Qualitative result comparison with or without orientation branch are shown in
+Figure~\ref{fig:ranks}. The advantage of learning orientation and ID signal can
+be seen in each pair where in MTML-OSG different views of the same ID vehicle
+are ranked higher compared to MTML-SG (Figure~\ref{fig:ranks}(a,b,d)). It can also be observerd that similar
+viewpoints better grouped together in the ranks (Figure~\ref{fig:ranks}(c,d)).
 
 
 

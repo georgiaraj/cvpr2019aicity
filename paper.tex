@@ -815,9 +815,9 @@ than the model which was only trained on CityFlow.
 Meanwhile, the mAP and CMC performance is a slightly lower on VeRi-776
 than the model only training on VeRi-776. We suspect this is due to training
 for a shorter period of time, as this experiment ran for only 100 epochs, compared to 150.
-(2) By adding orientation branch, the MLTML-OSG model totalling 4 branches,
+(2) By adding the orientation branch, for the MLTML-OSG model,
 we obtain the best mAP performance {62.6\%} and {23.6\%} on VeRi-776 and
-CityFlow respectively.
+CityFlow respectively. This is improved to {66.4\%} and {29.2\%} with reranking.
 This shows that our method of mutual learning between the orientation branch supervised by orientation labels and the other branches supervised by ID label is effective.
 
 %(1) After including Veri776 data for training orientation branch (O branch),
